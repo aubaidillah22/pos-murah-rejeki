@@ -6,9 +6,9 @@
         </button>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Nama</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Email</th>
@@ -20,7 +20,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($users as $user)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr class="table-row">
                     <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-100">{{ $user->name }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $user->outlet?->name ?? '-' }}</td>
@@ -42,7 +42,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Belum ada pengguna</td></tr>
+                <tr><td colspan="6" class="empty-state"><p class="empty-state-text">Belum ada pengguna</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -59,25 +59,25 @@
             <form wire:submit="save" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama *</label>
-                    <input type="text" wire:model="name" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" required>
+                    <input type="text" wire:model="name" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
                     @error('name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email *</label>
-                    <input type="email" wire:model="email" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" required>
+                    <input type="email" wire:model="email" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
                     @error('email') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Password {{ $editId ? '(kosongkan jika tidak diubah)' : '*' }}
                     </label>
-                    <input type="password" wire:model="password" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" {{ $editId ? '' : 'required' }}>
+                    <input type="password" wire:model="password" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" {{ $editId ? '' : 'required' }}>
                     @error('password') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Outlet</label>
-                        <select wire:model="selected_outlet_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <select wire:model="selected_outlet_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                             <option value="">Pilih Outlet</option>
                             @foreach($outlets as $outlet)
                             <option value="{{ $outlet->id }}">{{ $outlet->name }}</option>
@@ -86,7 +86,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role *</label>
-                        <select wire:model="selected_role" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" required>
+                        <select wire:model="selected_role" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
                             <option value="">Pilih Role</option>
                             @foreach($roles as $role)
                             <option value="{{ $role->name }}">{{ $role->name }}</option>

@@ -3,7 +3,7 @@
         <!-- Left: Product Search & List -->
         <div class="lg:col-span-2 space-y-4">
             <!-- Search Bar -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <div class="card p-4">
                 <div class="relative">
                     <svg class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -11,7 +11,7 @@
                     <input type="text" 
                            wire:model.live="search" 
                            placeholder="Cari produk (nama, SKU, atau scan barcode)..."
-                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
+                           class="w-full pl-10 pr-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700 dark:text-gray-100"
                            autofocus>
                 </div>
 
@@ -34,7 +34,7 @@
             </div>
 
             <!-- Quick Product Categories -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <div class="card p-4">
                 <h4 class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-3">Kategori Cepat</h4>
                 <div class="flex flex-wrap gap-2">
                     @foreach(\App\Models\Category::where('is_active', true)->get() as $category)
@@ -157,7 +157,7 @@
         </div>
 
         <!-- Right: Cart -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 flex flex-col" style="height: calc(100vh - 8rem);">
+        <div class="card p-4 flex flex-col" style="height: calc(100vh - 8rem);">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">🛒 Keranjang</h3>
                 <span class="text-xs text-gray-500 dark:text-gray-400">{{ count($cart) }} item</span>
@@ -194,7 +194,7 @@
                                     class="w-7 h-7 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 text-sm">-</button>
                             <input type="number" value="{{ $item['quantity'] }}" 
                                    wire:change="updateQuantity({{ $index }}, $event.target.value)"
-                                   class="w-14 text-center border border-gray-300 dark:border-gray-600 rounded-lg text-sm py-1 dark:bg-gray-700 dark:text-gray-100" min="1" max="{{ $item['stock'] }}">
+                                   class="w-14 text-center border border-gray-300 dark:border-gray-600 rounded-lg text-sm py-1 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" min="1" max="{{ $item['stock'] }}">
                             <button wire:click="updateQuantity({{ $index }}, {{ $item['quantity'] + 1 }})" 
                                     class="w-7 h-7 bg-gray-200 dark:bg-gray-600 rounded-full flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-300 text-sm">+</button>
                         </div>
@@ -218,11 +218,11 @@
                 </div>
                 <div class="flex justify-between text-sm">
                     <span class="text-gray-500 dark:text-gray-400">Diskon</span>
-                    <input type="number" wire:model.live="discount" class="w-28 text-right border border-gray-300 dark:border-gray-600 rounded text-sm py-1 dark:bg-gray-700 dark:text-gray-100" placeholder="0">
+                    <input type="number" wire:model.live="discount" class="w-28 text-right border border-gray-300 dark:border-gray-600 rounded text-sm py-1 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="0">
                 </div>
                 <div class="flex justify-between text-sm">
                     <span class="text-gray-500 dark:text-gray-400">Pajak (PPN)</span>
-                    <input type="number" wire:model.live="tax" class="w-28 text-right border border-gray-300 dark:border-gray-600 rounded text-sm py-1 dark:bg-gray-700 dark:text-gray-100" placeholder="0">
+                    <input type="number" wire:model.live="tax" class="w-28 text-right border border-gray-300 dark:border-gray-600 rounded text-sm py-1 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="0">
                 </div>
                 <div class="flex justify-between text-base font-bold border-t border-gray-200 dark:border-gray-700 pt-2">
                     <span>Grand Total</span>
@@ -246,7 +246,7 @@
             
             <input type="text" wire:model.live="customer_search" 
                    placeholder="Cari nama atau telepon..."
-                   class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 mb-3">
+                   class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mb-3">
 
             <div class="max-h-40 overflow-y-auto space-y-1 mb-4">
                 @foreach($customers as $customer)
@@ -259,8 +259,8 @@
 
             <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
                 <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pelanggan Baru</h4>
-                <input type="text" wire:model="customer_name" placeholder="Nama" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 mb-2">
-                <input type="text" wire:model="customer_phone" placeholder="Telepon" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 mb-3">
+                <input type="text" wire:model="customer_name" placeholder="Nama" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mb-2">
+                <input type="text" wire:model="customer_phone" placeholder="Telepon" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mb-3">
                 <button wire:click="createCustomer" class="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700">
                     Tambah Pelanggan
                 </button>
@@ -285,7 +285,7 @@
 
                 <div>
                     <label class="text-sm text-gray-600 dark:text-gray-300">Metode Pembayaran</label>
-                    <select wire:model="payment_method" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 mt-1">
+                    <select wire:model="payment_method" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mt-1">
                         <option value="cash">Tunai</option>
                         <option value="qris">QRIS</option>
                         <option value="transfer">Transfer</option>
@@ -295,7 +295,7 @@
 
                 <div>
                     <label class="text-sm text-gray-600 dark:text-gray-300">Jumlah Dibayar</label>
-                    <input type="number" wire:model.live="paid_amount" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 mt-1">
+                    <input type="number" wire:model.live="paid_amount" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mt-1">
                 </div>
 
                 @if($paid_amount >= $grand_total)
@@ -308,7 +308,7 @@
                 @if($paid_amount < $grand_total)
                 <div>
                     <label class="text-sm text-gray-600 dark:text-gray-300">Status Pembayaran</label>
-                    <select wire:model="payment_status" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 mt-1">
+                    <select wire:model="payment_status" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mt-1">
                         <option value="due">Piutang (Belum Lunas)</option>
                     </select>
                 </div>
@@ -316,7 +316,7 @@
 
                 <div>
                     <label class="text-sm text-gray-600 dark:text-gray-300">Catatan</label>
-                    <textarea wire:model="notes" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 mt-1" rows="2"></textarea>
+                    <textarea wire:model="notes" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mt-1" rows="2"></textarea>
                 </div>
             </div>
 

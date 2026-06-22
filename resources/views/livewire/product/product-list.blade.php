@@ -1,15 +1,15 @@
 <div>
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
         <div class="flex-1 flex items-center gap-2">
             <div class="relative flex-1 max-w-md">
                 <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari produk..."
-                       class="w-full pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-700 dark:text-gray-100">
+                       class="w-full pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </div>
-            <select wire:model.live="category_id" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+            <select wire:model.live="category_id" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <option value="">Semua Kategori</option>
                 @foreach($categories as $cat)
                 <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -30,10 +30,10 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-700">
+                <thead class="table-header">
                     <tr>
                         <th wire:click="sortBy('name')" class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase cursor-pointer hover:text-gray-700 dark:hover:text-gray-200">
                             Nama @if($sortField === 'name') {{ $sortDirection === 'asc' ? '↑' : '↓' }} @endif
@@ -47,7 +47,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($products as $product)
-                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 {{ !$product->is_active ? 'opacity-50' : '' }}">
+                    <tr class="table-row {{ !$product->is_active ? 'opacity-50' : '' }}">
                         <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-100">{{ $product->name }}</td>
                         <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $product->sku ?? '-' }}</td>
                         <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $product->category?->name ?? '-' }}</td>
@@ -64,7 +64,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Belum ada produk</td></tr>
+                    <tr><td colspan="6" class="empty-state"><p class="empty-state-text">Belum ada produk</p><p class="empty-state-sub">Klik "Tambah Produk" untuk menambahkan produk baru</p></td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -85,23 +85,23 @@
             <form wire:submit="save" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Produk *</label>
-                    <input type="text" wire:model="name" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" required>
+                    <input type="text" wire:model="name" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
                     @error('name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">SKU</label>
-                        <input type="text" wire:model="sku" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <input type="text" wire:model="sku" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Barcode</label>
-                        <input type="text" wire:model="barcode" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <input type="text" wire:model="barcode" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kategori</label>
-                        <select wire:model="selected_category_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <select wire:model="selected_category_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                             <option value="">Pilih Kategori</option>
                             @foreach($categories as $cat)
                             <option value="{{ $cat->id }}">{{ $cat->name }}</option>
@@ -110,7 +110,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Satuan</label>
-                        <select wire:model="selected_unit_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <select wire:model="selected_unit_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                             <option value="">Pilih Satuan</option>
                             @foreach($units as $unit)
                             <option value="{{ $unit->id }}">{{ $unit->name }}</option>
@@ -121,26 +121,26 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Harga Beli *</label>
-                        <input type="number" wire:model="purchase_price" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" required>
+                        <input type="number" wire:model="purchase_price" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Harga Jual *</label>
-                        <input type="number" wire:model="selling_price" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" required>
+                        <input type="number" wire:model="selling_price" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stok Awal *</label>
-                        <input type="number" wire:model="stock" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <input type="number" wire:model="stock" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Min. Stok Alert</label>
-                        <input type="number" wire:model="min_stock_alert" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <input type="number" wire:model="min_stock_alert" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi</label>
-                    <textarea wire:model="description" rows="2" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100"></textarea>
+                    <textarea wire:model="description" rows="2" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"></textarea>
                 </div>
                 <div class="flex items-center space-x-2">
                     <input type="checkbox" wire:model="is_active" id="is_active" class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700">
@@ -178,7 +178,7 @@
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Import Produk dari Excel</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Format: Nama, SKU, Kategori, Satuan, Harga Beli, Harga Jual, Stok, Min Stok</p>
             <form wire:submit="importExcel">
-                <input type="file" wire:model="importFile" accept=".xlsx,.xls,.csv" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 mb-4">
+                <input type="file" wire:model="importFile" accept=".xlsx,.xls,.csv" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mb-4">
                 @error('importFile') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 <div class="flex gap-2 justify-end">
                     <button type="button" wire:click="$set('showImportModal', false)" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Batal</button>

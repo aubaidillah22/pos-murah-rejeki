@@ -23,20 +23,20 @@
     <form wire:submit="save">
         <!-- General Settings -->
         @if($activeTab === 'general')
-        <div class="card p-6 max-w-2xl space-y-6">
+        <div class="card p-6 space-y-6">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Pengaturan Umum</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Toko</label>
                     <input type="text" wire:model="store_name" placeholder="Murah Rejeki"
-                           class="input">
+                           class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     @error('store_name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pajak Default (PPN %)</label>
                     <input type="number" wire:model="default_tax" step="0.1" min="0" max="100"
-                           class="input">
+                           class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     @error('default_tax') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                     <p class="text-xs text-gray-400 mt-1">PPN default untuk transaksi POS</p>
                 </div>
@@ -46,7 +46,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telepon Toko</label>
                     <input type="text" wire:model="store_phone" placeholder="021-12345678"
-                           class="input">
+                           class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     @error('store_phone') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -54,7 +54,7 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat Toko</label>
                 <textarea wire:model="store_address" rows="3" placeholder="Jl. Raya Utama No. 123, Jakarta"
-                          class="input"></textarea>
+                          class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"></textarea>
                 @error('store_address') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
             </div>
 
@@ -86,7 +86,7 @@
 
         <!-- Logo Settings -->
         @if($activeTab === 'logo')
-        <div class="card p-6 max-w-2xl space-y-6">
+        <div class="card p-6 space-y-6">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Logo Toko</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">Upload logo toko untuk ditampilkan di sidebar dan struk transaksi. Format PNG/JPG, maks 2MB.</p>
 
@@ -131,14 +131,14 @@
 
         <!-- Receipt Settings -->
         @if($activeTab === 'receipt')
-        <div class="card p-6 max-w-2xl space-y-6">
+        <div class="card p-6 space-y-6">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Kustomisasi Struk Transaksi</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">Sesuaikan tampilan struk yang dicetak setelah transaksi POS.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ukuran Struk</label>
-                    <select wire:model="receipt_width" class="input">
+                    <select wire:model="receipt_width" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                         <option value="80mm">80mm (Thermal Lebar)</option>
                         <option value="58mm">58mm (Thermal Sempit)</option>
                     </select>
@@ -149,7 +149,7 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pesan Kepala Struk</label>
                     <textarea wire:model="receipt_header" rows="2" maxlength="500"
                               placeholder="Terima kasih sudah berbelanja..."
-                              class="input"></textarea>
+                              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"></textarea>
                     @error('receipt_header') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                     <p class="text-xs text-gray-400 mt-1">Pesan tambahan di bagian atas struk</p>
                 </div>
@@ -159,7 +159,7 @@
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pesan Kaki Struk</label>
                 <textarea wire:model="receipt_footer" rows="2" maxlength="500"
                           placeholder="Terima kasih telah berbelanja di toko kami."
-                          class="input"></textarea>
+                          class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"></textarea>
                 @error('receipt_footer') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 <p class="text-xs text-gray-400 mt-1">Pesan di bagian bawah struk. Maksimal 500 karakter.</p>
             </div>

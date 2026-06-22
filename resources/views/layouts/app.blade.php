@@ -14,6 +14,48 @@
     </script>
     <style>
         [x-cloak] { display: none !important; }
+
+        /* Card utilities */
+        .card { @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700; }
+        .card-hover { @apply card transition-all duration-200 hover:shadow-md hover:-translate-y-0.5; }
+
+        /* Badge utilities */
+        .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
+        .badge-green { @apply badge bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300; }
+        .badge-red { @apply badge bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300; }
+        .badge-emerald { @apply badge bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300; }
+        .badge-blue { @apply badge bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300; }
+        .badge-amber { @apply badge bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300; }
+        .badge-gray { @apply badge bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300; }
+
+        /* Status dot */
+        .status-dot { @apply w-2 h-2 rounded-full inline-block; }
+        .status-dot-green { @apply status-dot bg-green-500; }
+        .status-dot-red { @apply status-dot bg-red-500; }
+        .status-dot-amber { @apply status-dot bg-amber-500; }
+
+        /* Table cell utilities */
+        .cell-primary { @apply px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-100; }
+        .cell-secondary { @apply px-4 py-3 text-sm text-gray-500 dark:text-gray-400; }
+        .cell-number { @apply px-4 py-3 text-sm font-medium tabular-nums; }
+        .cell-amount { @apply cell-number text-emerald-600 dark:text-emerald-400 text-right; }
+        .cell-amount-negative { @apply cell-number text-red-600 dark:text-red-400 text-right; }
+        .cell-action { @apply px-4 py-3 text-right text-sm; }
+
+        /* Table utility */
+        .table-wrap { @apply card overflow-hidden; }
+        .table-header { @apply bg-gray-50 dark:bg-gray-700/50; }
+        .table-header th { @apply px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider; }
+        .table-row { @apply hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors; }
+
+        /* Empty state */
+        .empty-state { @apply px-4 py-12 text-center; }
+        .empty-state-icon { @apply text-4xl mb-2 text-gray-300 dark:text-gray-600; }
+        .empty-state-text { @apply text-sm text-gray-400 dark:text-gray-500; }
+        .empty-state-sub { @apply text-xs text-gray-300 dark:text-gray-600 mt-1; }
+
+        /* Number styling */
+        .tabular-nums { font-variant-numeric: tabular-nums; }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-sans antialiased">

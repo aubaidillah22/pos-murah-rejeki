@@ -2,8 +2,8 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div class="flex items-center gap-2 flex-1">
             <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nomor opname atau produk..."
-                   class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm w-64 dark:bg-gray-700 dark:text-gray-100">
-            <select wire:model.live="typeFilter" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                   class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm w-64 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <select wire:model.live="typeFilter" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <option value="">Semua Tipe</option>
                 <option value="surplus">Surplus (+)</option>
                 <option value="shortage">Shortage (-)</option>
@@ -22,9 +22,9 @@
     </div>
 
     <!-- Table -->
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">No. Opname</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Produk</th>
@@ -38,7 +38,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($opnames as $opname)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer" wire:click="viewDetail({{ $opname->id }})">
+                <tr class="table-row cursor-pointer" wire:click="viewDetail({{ $opname->id }})">
                     <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-100">{{ $opname->opname_number }}</td>
                     <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">{{ $opname->product?->name ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm text-right">{{ number_format($opname->system_stock) }}</td>
@@ -58,10 +58,10 @@
                     <td class="px-4 py-3 text-right text-xs text-gray-400">{{ $opname->created_at->format('d/m/Y H:i') }}</td>
                 </tr>
                 @empty
-                <tr><td colspan="8" class="px-4 py-12 text-center text-gray-400">
-                    <p class="text-lg mb-1">📦</p>
-                    <p>Belum ada data stok opname</p>
-                    <p class="text-xs mt-1">Klik "Stok Opname Baru" untuk melakukan penyesuaian stok</p>
+                <tr><td colspan="8" class="empty-state">
+                    <p class="empty-state-icon">📦</p>
+                    <p class="empty-state-text">Belum ada data stok opname</p>
+                    <p class="empty-state-sub">Klik "Stok Opname Baru" untuk melakukan penyesuaian stok</p>
                 </td></tr>
                 @endforelse
             </tbody>
@@ -84,7 +84,7 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cari Produk *</label>
                     <input type="text" wire:model.live="searchProduct" 
                            placeholder="Ketik nama atau SKU produk..."
-                           class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                           class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                     @if(count($searchResults) > 0)
                     <div class="mt-1 border border-gray-200 dark:border-gray-600 rounded-lg max-h-40 overflow-y-auto shadow">
                         @foreach($searchResults as $p)
@@ -123,7 +123,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Stok Aktual (Fisik) *</label>
                     <input type="number" wire:model.live="actual_stock" 
-                           class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" min="0" required>
+                           class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" min="0" required>
                     @error('actual_stock') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
 
@@ -145,7 +145,7 @@
                 <!-- Type -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipe Penyesuaian</label>
-                    <select wire:model="type" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                    <select wire:model="type" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                         <option value="surplus">Surplus (Stok Lebih)</option>
                         <option value="shortage">Shortage (Stok Kurang)</option>
                         <option value="correction">Koreksi</option>
@@ -155,7 +155,7 @@
                 <!-- Notes -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catatan</label>
-                    <textarea wire:model="notes" rows="2" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" 
+                    <textarea wire:model="notes" rows="2" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" 
                               placeholder="Contoh: barang rusak, hilang, kesalahan input, dll..."></textarea>
                     @error('notes') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>

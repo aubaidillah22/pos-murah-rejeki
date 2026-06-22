@@ -2,17 +2,17 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div class="flex-1 flex flex-wrap items-center gap-2">
             <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari invoice..."
-                   class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm w-40 dark:bg-gray-700 dark:text-gray-100">
-            <input type="date" wire:model.live="dateFrom" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
-            <input type="date" wire:model.live="dateTo" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
-            <select wire:model.live="paymentMethod" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                   class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm w-40 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <input type="date" wire:model.live="dateFrom" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <input type="date" wire:model.live="dateTo" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <select wire:model.live="paymentMethod" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <option value="">Semua Metode</option>
                 <option value="cash">Tunai</option>
                 <option value="qris">QRIS</option>
                 <option value="transfer">Transfer</option>
                 <option value="debit">Debit</option>
             </select>
-            <select wire:model.live="paymentStatus" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+            <select wire:model.live="paymentStatus" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 <option value="">Semua Status</option>
                 <option value="paid">Lunas</option>
                 <option value="due">Piutang</option>
@@ -20,9 +20,9 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Invoice</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tanggal</th>
@@ -35,7 +35,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($transactions as $t)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer" wire:click="viewDetail({{ $t->id }})">
+                <tr class="table-row cursor-pointer" wire:click="viewDetail({{ $t->id }})">
                     <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-100">{{ $t->invoice_number }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $t->transaction_date->format('d/m/Y H:i') }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $t->customer?->name ?? 'Umum' }}</td>
@@ -49,7 +49,7 @@
                     <td class="px-4 py-3 text-right text-xs text-gray-400 dark:text-gray-500">{{ ucfirst($t->payment_method) }}</td>
                 </tr>
                 @empty
-                <tr><td colspan="7" class="px-4 py-8 text-center text-gray-400">Belum ada transaksi</td></tr>
+                <tr><td colspan="7" class="empty-state"><p class="empty-state-text">Belum ada transaksi</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -153,7 +153,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alasan Void *</label>
                     <textarea wire:model="voidReason" rows="3" 
-                              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100"
+                              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                               placeholder="Contoh: kesalahan input, pesanan dibatalkan pelanggan, dll..." required></textarea>
                     @error('voidReason') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>

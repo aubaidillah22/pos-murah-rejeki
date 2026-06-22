@@ -8,9 +8,9 @@
             <button wire:click="$set('activeTab', 'expenses')" class="px-3 py-2 text-sm rounded-md {{ $activeTab === 'expenses' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Pengeluaran</button>
         </div>
         <div class="flex items-center gap-2">
-            <input type="date" wire:model.live="dateFrom" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+            <input type="date" wire:model.live="dateFrom" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
             <span class="text-gray-400">-</span>
-            <input type="date" wire:model.live="dateTo" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+            <input type="date" wire:model.live="dateTo" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
             <button wire:click="exportPdf('{{ $activeTab }}')" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm">📄 PDF</button>
             <button wire:click="exportExcel('{{ $activeTab }}')" class="px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm">⬇ Excel</button>
         </div>
@@ -18,9 +18,9 @@
 
     <!-- Sales Report -->
     @if($activeTab === 'sales')
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Invoice</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tanggal</th>
@@ -33,7 +33,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($salesReport as $s)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr class="table-row">
                     <td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-100">{{ $s->invoice_number }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $s->transaction_date->format('d/m/Y') }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $s->customer?->name ?? 'Umum' }}</td>
@@ -59,23 +59,23 @@
 
     @elseif($activeTab === 'profit')
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+        <div class="card p-5">
             <p class="text-sm text-gray-500 dark:text-gray-400">Total Penjualan</p>
             <h3 class="text-xl font-bold text-blue-600 mt-1">Rp {{ number_format($profitLoss['total_sales'] ?? 0, 0, ',', '.') }}</h3>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+        <div class="card p-5">
             <p class="text-sm text-gray-500 dark:text-gray-400">HPP (Harga Pokok Penjualan)</p>
             <h3 class="text-xl font-bold text-orange-600 mt-1">Rp {{ number_format($profitLoss['hpp'] ?? 0, 0, ',', '.') }}</h3>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+        <div class="card p-5">
             <p class="text-sm text-gray-500 dark:text-gray-400">Laba Kotor</p>
             <h3 class="text-xl font-bold text-emerald-600 mt-1">Rp {{ number_format($profitLoss['gross_profit'] ?? 0, 0, ',', '.') }}</h3>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+        <div class="card p-5">
             <p class="text-sm text-gray-500 dark:text-gray-400">Total Pengeluaran</p>
             <h3 class="text-xl font-bold text-red-600 mt-1">Rp {{ number_format($profitLoss['total_expenses'] ?? 0, 0, ',', '.') }}</h3>
         </div>
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+        <div class="card p-5">
             <p class="text-sm text-gray-500 dark:text-gray-400">Laba Bersih</p>
             <h3 class="text-xl font-bold {{ ($profitLoss['net_profit'] ?? 0) >= 0 ? 'text-emerald-600' : 'text-red-600' }} mt-1">
                 Rp {{ number_format($profitLoss['net_profit'] ?? 0, 0, ',', '.') }}
@@ -84,9 +84,9 @@
     </div>
 
     @elseif($activeTab === 'stock')
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Nama Produk</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Kategori</th>
@@ -98,7 +98,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($stockReport as $p)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr class="table-row">
                     <td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-100">{{ $p->name }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $p->category?->name ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $p->unit?->name ?? '-' }}</td>
@@ -125,9 +125,9 @@
     </div>
 
     @elseif($activeTab === 'cashflow')
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tanggal</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Deskripsi</th>
@@ -137,7 +137,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($cashFlow as $cf)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr class="table-row">
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $cf->created_at->format('d/m/Y H:i') }}</td>
                     <td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-100">{{ $cf->description }}</td>
                     <td class="px-4 py-3 text-center">
@@ -172,7 +172,7 @@
 
     @elseif($activeTab === 'expenses')
     <div class="mb-3">
-        <select wire:model.live="category" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+        <select wire:model.live="category" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
             <option value="">Semua Kategori</option>
             <option value="Listrik">Listrik</option>
             <option value="Air">Air</option>
@@ -183,9 +183,9 @@
             <option value="Lainnya">Lainnya</option>
         </select>
     </div>
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tanggal</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Deskripsi</th>
@@ -195,7 +195,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($expenses as $e)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr class="table-row">
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $e->expense_date->format('d/m/Y') }}</td>
                     <td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-100">{{ $e->description }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $e->category ?? '-' }}</td>

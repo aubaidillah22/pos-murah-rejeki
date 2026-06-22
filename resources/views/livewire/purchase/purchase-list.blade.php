@@ -4,9 +4,9 @@
         <button wire:click="create" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">+ PO Baru</button>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Invoice</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Supplier</th>
@@ -17,7 +17,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($purchases as $po)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                <tr class="table-row">
                     <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-100">{{ $po->invoice_number }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $po->supplier?->name ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm text-right text-emerald-600 font-medium">Rp {{ number_format($po->total_amount, 0, ',', '.') }}</td>
@@ -36,7 +36,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Belum ada purchase order</td></tr>
+                <tr><td colspan="5" class="empty-state"><p class="empty-state-text">Belum ada purchase order</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -50,7 +50,7 @@
             
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Supplier *</label>
-                <select wire:model="supplier_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" required>
+                <select wire:model="supplier_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
                     <option value="">Pilih Supplier</option>
                     @foreach($suppliers as $s)
                     <option value="{{ $s->id }}">{{ $s->name }}</option>
@@ -61,7 +61,7 @@
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Cari Produk</label>
                 <input type="text" wire:model.live="searchProduct" placeholder="Nama produk..."
-                       class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                       class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                 @if(count($searchResults) > 0)
                 <div class="mt-2 border border-gray-200 dark:border-gray-600 rounded-lg max-h-40 overflow-y-auto">
                     @foreach($searchResults as $p)
@@ -78,7 +78,7 @@
                 <div class="flex items-center gap-2 bg-gray-50 dark:bg-gray-700 rounded-lg p-2">
                     <span class="flex-1 text-sm">{{ $item['name'] }}</span>
                     <input type="number" value="{{ $item['quantity'] }}" wire:change="updateItemQty({{ $index }}, $event.target.value)"
-                           class="w-16 text-center border border-gray-300 dark:border-gray-600 rounded text-sm py-1 dark:bg-gray-700 dark:text-gray-100" min="1">
+                           class="w-16 text-center border border-gray-300 dark:border-gray-600 rounded text-sm py-1 dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" min="1">
                     <span class="text-sm">x Rp {{ number_format($item['purchase_price'], 0, ',', '.') }}</span>
                     <span class="text-sm font-medium w-24 text-right">Rp {{ number_format($item['sub_total'], 0, ',', '.') }}</span>
                     <button wire:click="removeItem({{ $index }})" class="text-red-400 hover:text-red-600">&times;</button>

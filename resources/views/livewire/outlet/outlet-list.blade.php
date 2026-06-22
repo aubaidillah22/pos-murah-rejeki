@@ -6,9 +6,9 @@
         </button>
     </div>
 
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div class="table-wrap">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead class="bg-gray-50 dark:bg-gray-700">
+            <thead class="table-header">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Nama</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Alamat</th>
@@ -20,7 +20,7 @@
             </thead>
             <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($outlets as $outlet)
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 {{ !$outlet->is_active ? 'opacity-50' : '' }}">
+                <tr class="table-row {{ !$outlet->is_active ? 'opacity-50' : '' }}">
                     <td class="px-4 py-3 text-sm font-medium text-gray-800 dark:text-gray-100">{{ $outlet->name }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $outlet->address ?? '-' }}</td>
                     <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $outlet->phone ?? '-' }}</td>
@@ -38,7 +38,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Belum ada outlet</td></tr>
+                <tr><td colspan="6" class="empty-state"><p class="empty-state-text">Belum ada outlet</p></td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -55,23 +55,23 @@
             <form wire:submit="save" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Outlet *</label>
-                    <input type="text" wire:model="name" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100" required>
+                    <input type="text" wire:model="name" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
                     @error('name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Alamat</label>
-                    <textarea wire:model="address" rows="2" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100"></textarea>
+                    <textarea wire:model="address" rows="2" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"></textarea>
                     @error('address') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telepon</label>
-                        <input type="text" wire:model="phone" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <input type="text" wire:model="phone" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                         @error('phone') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                        <input type="email" wire:model="email" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+                        <input type="email" wire:model="email" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
                         @error('email') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                     </div>
                 </div>
