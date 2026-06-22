@@ -52,11 +52,9 @@
                 $storeName = \App\Models\Setting::getValue('store_name', config('app.name'));
                 $storeAddress = \App\Models\Setting::getValue('store_address', '');
                 $storePhone = \App\Models\Setting::getValue('store_phone', '');
-                $storeLogo = \App\Models\Setting::getValue('store_logo', '');
                 $receiptFooter = \App\Models\Setting::getValue('receipt_footer', 'Terima kasih telah berbelanja di toko kami.');
                 $receiptHeader = \App\Models\Setting::getValue('receipt_header', '');
                 $receiptWidth = \App\Models\Setting::getValue('receipt_width', '80mm');
-                $showLogo = \App\Models\Setting::getValue('receipt_show_logo', '1') === '1';
                 $showAddress = \App\Models\Setting::getValue('receipt_show_address', '1') === '1';
                 $showPhone = \App\Models\Setting::getValue('receipt_show_phone', '1') === '1';
                 $showTax = \App\Models\Setting::getValue('receipt_show_tax', '1') === '1';
@@ -69,9 +67,6 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
                     <div id="receipt" style="width: {{ $receiptWidth }}; margin: 0 auto;">
                         <div class="text-center mb-3 border-b border-gray-200 dark:border-gray-700 pb-3">
-                            @if($storeLogo && $showLogo)
-                            <img src="{{ Storage::disk('public')->url('settings/' . $storeLogo) }}" class="h-12 mx-auto mb-2">
-                            @endif
                             <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">{{ $storeName }}</h3>
                             @if($storeAddress && $showAddress)<p class="text-xs text-gray-500 dark:text-gray-400">{{ $storeAddress }}</p>@endif
                             @if($storePhone && $showPhone)<p class="text-xs text-gray-500 dark:text-gray-400">Telp: {{ $storePhone }}</p>@endif

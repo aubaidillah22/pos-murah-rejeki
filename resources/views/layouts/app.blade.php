@@ -69,27 +69,19 @@
         <!-- Sidebar -->
         @php
             $settingsStoreName = \App\Models\Setting::getValue('store_name', config('app.name'));
-            $settingsStoreLogo = \App\Models\Setting::getValue('store_logo', '');
         @endphp
-        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 transform transition-all duration-200"
+        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-800 dark:bg-gray-950 border-r border-emerald-700 dark:border-gray-800 transform transition-all duration-200"
                :class="[sidebarOpen ? 'translate-x-0' : '-translate-x-full', sidebarCollapsed ? 'lg:-translate-x-full' : 'lg:translate-x-0']">
-            <div class="flex items-center justify-between h-16 px-5 border-b border-gray-100 dark:border-gray-800">
-                <div class="flex items-center gap-2.5">
-                    @if($settingsStoreLogo)
-                    <img src="{{ Storage::disk('public')->url('settings/' . $settingsStoreLogo) }}" class="w-7 h-7 object-contain rounded">
-                    @else
-                    <div class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-                        <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex items-center justify-between h-16 px-5 border-b border-emerald-700 dark:border-gray-800">
+                <div class="flex items-center gap-2.5 min-w-0">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-700 dark:bg-emerald-900/50 flex items-center justify-center shrink-0">
+                        <svg class="w-4 h-4 text-white dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
                         </svg>
                     </div>
-                    @endif
-                    <div>
-                        <h1 class="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight">{{ $settingsStoreName }}</h1>
-                        <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">Toko Bangunan</p>
-                    </div>
+                    <h1 class="text-sm font-bold text-white truncate">{{ $settingsStoreName }}</h1>
                 </div>
-                <button @@click="sidebarOpen = false" class="lg:hidden p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                <button @@click="sidebarOpen = false" class="lg:hidden p-1 rounded-lg text-emerald-200 dark:text-gray-500 hover:bg-emerald-700 dark:hover:bg-gray-800 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -126,10 +118,10 @@
                 <a href="{{ route($item['route']) }}"
                    class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-full transition-all duration-150
                           {{ $isActive
-                              ? 'bg-emerald-50 dark:bg-emerald-900/25 text-emerald-700 dark:text-emerald-300'
-                              : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200' }}">
+                              ? 'bg-white dark:bg-emerald-900/25 text-emerald-800 dark:text-emerald-300 shadow-sm'
+                              : 'text-emerald-100 dark:text-gray-400 hover:bg-emerald-700 dark:hover:bg-gray-800 hover:text-white dark:hover:text-gray-200' }}">
                     <svg class="w-5 h-5 flex-shrink-0 transition-all duration-150
-                              {{ $isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
+                              {{ $isActive ? 'text-emerald-700 dark:text-emerald-400' : 'text-emerald-200 dark:text-gray-500 group-hover:text-white dark:group-hover:text-gray-300' }}"
                          fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/>
                     </svg>
@@ -145,8 +137,8 @@
             <!-- Top bar -->
             <header x-data="{ scrolled: false }"
                     x-init="let t; window.addEventListener('scroll', () => { t && cancelAnimationFrame(t); t = requestAnimationFrame(() => scrolled = window.scrollY > 24); }, { passive: true })"
-                    :class="scrolled ? 'h-12 shadow-lg' : 'h-14 md:h-16 shadow-sm'"
-                    class="sticky top-0 z-30 bg-white/75 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 transition-all duration-200">
+                    :class="scrolled ? 'shadow-lg bg-white/90 dark:bg-gray-900/90' : 'shadow-sm bg-white/75 dark:bg-gray-900/80'"
+                    class="sticky top-0 z-30 h-14 md:h-16 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 transition-all duration-200">
                 <div class="flex items-center justify-between h-full px-4 md:px-6">
                     <div class="flex items-center gap-1.5">
                         <button @@click="sidebarOpen = true"
@@ -170,8 +162,8 @@
                             </template>
                         </button>
                         <div class="ml-1.5">
-                            <h2 :class="scrolled ? 'text-sm' : 'text-base'" class="font-semibold text-gray-800 dark:text-gray-100 leading-tight transition-all duration-200">@yield('page-title', $title ?? 'Dashboard')</h2>
-                            <time x-show="!scrolled" x-cloak class="text-[11px] text-gray-400 dark:text-gray-500 hidden md:block">{{ now()->translatedFormat('l, d F Y') }}</time>
+                            <h2 class="text-sm md:text-base font-semibold text-gray-800 dark:text-gray-100 leading-tight">@yield('page-title', $title ?? 'Dashboard')</h2>
+                            <time x-show="!scrolled" x-cloak x-transition:enter.opacity.duration.200ms class="text-[11px] text-gray-400 dark:text-gray-500 hidden md:block">{{ now()->translatedFormat('l, d F Y') }}</time>
                         </div>
                     </div>
 
@@ -243,21 +235,23 @@
 
             <!-- Page content -->
             <main class="p-4 md:p-6">
-                @if(session('success'))
-                <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
-                    <span>{{ session('success') }}</span>
-                    <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">&times;</button>
-                </div>
-                @endif
+                <div class="max-w-7xl mx-auto">
+                    @if(session('success'))
+                    <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
+                        <span>{{ session('success') }}</span>
+                        <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">&times;</button>
+                    </div>
+                    @endif
 
-                @if(session('error'))
-                <div class="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
-                    <span>{{ session('error') }}</span>
-                    <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700">&times;</button>
-                </div>
-                @endif
+                    @if(session('error'))
+                    <div class="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
+                        <span>{{ session('error') }}</span>
+                        <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700">&times;</button>
+                    </div>
+                    @endif
 
-                {{ $slot }}
+                    {{ $slot }}
+                </div>
             </main>
         </div>
     </div>

@@ -1,72 +1,74 @@
 <div class="space-y-6">
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div class="card-hover p-5">
-            <div class="flex items-center justify-between">
-                <div class="space-y-1">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Penjualan Hari Ini</p>
-                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">Rp {{ number_format($totalSalesToday, 0, ',', '.') }}</h3>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-emerald-900">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-hover p-5">
-            <div class="flex items-center justify-between">
-                <div class="space-y-1">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Transaksi Hari Ini</p>
-                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">{{ $totalTransactionsToday }}</h3>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-blue-900">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                    </svg>
+    <div class="card p-5">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div class="p-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Penjualan Hari Ini</p>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 tabular-nums mt-1">Rp {{ number_format($totalSalesToday, 0, ',', '.') }}</h3>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-200 dark:shadow-emerald-900 shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card-hover p-5">
-            <div class="flex items-center justify-between">
-                <div class="space-y-1">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Laba Kotor Hari Ini</p>
-                    <h3 class="text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums">Rp {{ number_format($profitToday, 0, ',', '.') }}</h3>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg shadow-green-200 dark:shadow-green-900">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-                    </svg>
+            <div class="p-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Transaksi Hari Ini</p>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 tabular-nums mt-1">{{ $totalTransactionsToday }}</h3>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-blue-900 shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card-hover p-5">
-            <div class="flex items-center justify-between">
-                <div class="space-y-1">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Produk</p>
-                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">{{ $totalProducts }}</h3>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-amber-900">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
+            <div class="p-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Laba Kotor Hari Ini</p>
+                        <h3 class="text-lg font-bold text-emerald-600 dark:text-emerald-400 tabular-nums mt-1">Rp {{ number_format($profitToday, 0, ',', '.') }}</h3>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center shadow-lg shadow-green-200 dark:shadow-green-900 shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card-hover p-5">
-            <div class="flex items-center justify-between">
-                <div class="space-y-1">
-                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Pelanggan</p>
-                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 tabular-nums">{{ $totalCustomers }}</h3>
+            <div class="p-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Produk</p>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 tabular-nums mt-1">{{ $totalProducts }}</h3>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-amber-900 shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-200 dark:shadow-purple-900">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    </svg>
+            </div>
+
+            <div class="p-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Pelanggan</p>
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100 tabular-nums mt-1">{{ $totalCustomers }}</h3>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center shadow-lg shadow-purple-200 dark:shadow-purple-900 shrink-0">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
@@ -262,7 +264,7 @@
             chart: {
                 type: 'area',
                 height: 300,
-                toolbar: { show: true, tools: { download: true, selection: false, zoom: false, pan: false } },
+                toolbar: { show: false },
                 foreColor: '#6b7280',
                 zoom: { enabled: false },
                 animations: { enabled: true, dynamicAnimation: { speed: 500 } }
