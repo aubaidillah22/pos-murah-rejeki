@@ -46,23 +46,27 @@ class Index extends Component
         $this->totalSalesToday = Transaction::whereDate('transaction_date', $today)
             ->where('payment_status', 'paid')
             ->whereNull('voided_at')
-            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
             ->sum('grand_total');
 
         // Jumlah transaksi hari ini (exclude voided)
         $this->totalTransactionsToday = Transaction::whereDate('transaction_date', $today)
             ->whereNull('voided_at')
-            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
             ->count();
 
-        // Laba kotor hari ini (exclude voided)
-        $this->profitToday = Transaction::whereDate('transaction_date', $today)
-            ->where('payment_status', 'paid')
-            ->whereNull('voided_at')
-            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+        // Laba kotor hari ini (exclude voided) — pakai subquery agar tidak ambiguous
+        $profitQuery = Transaction::whereDate('transactions.transaction_date', $today)
+            ->where('transactions.payment_status', 'paid')
+            ->whereNull('transactions.voided_at')
             ->join('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
-            ->join('products', 'transaction_details.product_id', '=', 'products.id')
-            ->sum(DB::raw('transaction_details.quantity * (products.selling_price - products.purchase_price)'));
+            ->join('products', 'transaction_details.product_id', '=', 'products.id');
+
+        if ($outletId) {
+            $profitQuery->where('transactions.outlet_id', $outletId);
+        }
+
+        $this->profitToday = $profitQuery->sum(DB::raw('transaction_details.quantity * (products.selling_price - products.purchase_price)'));
 
         // Total produk aktif
         $this->totalProducts = Product::when($outletId, fn($q) => $q->where('outlet_id', $outletId))
@@ -106,7 +110,7 @@ class Index extends Component
             ->whereYear('transaction_date', $year)
             ->where('payment_status', 'paid')
             ->whereNull('voided_at')
-            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
             ->groupBy(DB::raw('MONTH(transaction_date)'))
             ->orderBy(DB::raw('MONTH(transaction_date)'))
             ->pluck('total', 'month')
@@ -122,7 +126,7 @@ class Index extends Component
             ->whereDate('transaction_date', $today)
             ->where('payment_status', 'paid')
             ->whereNull('voided_at')
-            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
             ->groupBy('payment_method')
             ->pluck('total', 'payment_method');
 
@@ -140,7 +144,7 @@ class Index extends Component
         // Transaksi terbaru (5 terakhir, exclude voided)
         $this->recentTransactions = Transaction::with(['customer', 'user'])
             ->whereNull('voided_at')
-            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
             ->orderBy('id', 'desc')
             ->limit(5)
             ->get();
@@ -150,7 +154,7 @@ class Index extends Component
             ->whereDate('transaction_date', $today)
             ->where('payment_status', 'paid')
             ->whereNull('voided_at')
-            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
             ->groupBy('user_id')
             ->orderByDesc('total_amount')
             ->limit(5)
