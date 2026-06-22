@@ -29,30 +29,32 @@
             $settingsStoreName = \App\Models\Setting::getValue('store_name', config('app.name'));
             $settingsStoreLogo = \App\Models\Setting::getValue('store_logo', '');
         @endphp
-        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-800 dark:bg-gray-950 text-white transform transition-all duration-200"
+        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-950 border-r border-gray-200 dark:border-gray-800 transform transition-all duration-200"
                :class="[sidebarOpen ? 'translate-x-0' : '-translate-x-full', sidebarCollapsed ? 'lg:-translate-x-full' : 'lg:translate-x-0']">
-            <div class="flex items-center justify-between h-16 px-4 border-b border-emerald-700 dark:border-gray-800">
-                <div class="flex items-center space-x-2">
+            <div class="flex items-center justify-between h-16 px-5 border-b border-gray-100 dark:border-gray-800">
+                <div class="flex items-center gap-2.5">
                     @if($settingsStoreLogo)
-                    <img src="{{ Storage::disk('public')->url('settings/' . $settingsStoreLogo) }}" class="w-8 h-8 object-contain">
+                    <img src="{{ Storage::disk('public')->url('settings/' . $settingsStoreLogo) }}" class="w-7 h-7 object-contain rounded">
                     @else
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
-                    </svg>
+                    <div class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                        <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+                        </svg>
+                    </div>
                     @endif
                     <div>
-                        <h1 class="font-bold text-sm">{{ $settingsStoreName }}</h1>
-                        <p class="text-xs text-emerald-300">Toko Bangunan</p>
+                        <h1 class="text-sm font-semibold text-gray-900 dark:text-gray-100 leading-tight">{{ $settingsStoreName }}</h1>
+                        <p class="text-[10px] text-gray-400 dark:text-gray-500 leading-tight">Toko Bangunan</p>
                     </div>
                 </div>
-                <button @@click="sidebarOpen = false" class="lg:hidden text-white">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button @@click="sidebarOpen = false" class="lg:hidden p-1 rounded-lg text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
 
-            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
                 @php
                     $menuItems = [
                         ['name' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
@@ -76,88 +78,115 @@
                 @endphp
 
                 @foreach($menuItems as $item)
-                <a href="{{ route($item['route']) }}" 
-                   class="flex items-center px-3 py-2.5 rounded-lg text-sm transition-all duration-150
-                          {{ request()->routeIs($item['route'] . '*') ? 'bg-emerald-600 text-white shadow-lg' : 'text-emerald-100 hover:bg-emerald-700 hover:text-white' }}">
-                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                @php
+                    $isActive = request()->routeIs($item['route'] . '*');
+                @endphp
+                <a href="{{ route($item['route']) }}"
+                   class="group flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-full transition-all duration-150
+                          {{ $isActive
+                              ? 'bg-emerald-50 dark:bg-emerald-900/25 text-emerald-700 dark:text-emerald-300'
+                              : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-200' }}">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-all duration-150
+                              {{ $isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300' }}"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/>
                     </svg>
-                    {{ $item['name'] }}
+                    <span>{{ $item['name'] }}</span>
                 </a>
                 @endforeach
             </nav>
-
 
         </aside>
 
         <!-- Main content -->
         <div :class="sidebarCollapsed ? 'lg:pl-0' : 'lg:pl-64'" class="transition-all duration-200">
             <!-- Top bar -->
-            <header class="sticky top-0 z-30 bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
-                <div class="flex items-center justify-between h-16 px-4">
-                    <div class="flex items-center gap-2">
-                        <button @@click="sidebarOpen = true" class="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <header x-data="{ scrolled: false }"
+                    x-init="let t; window.addEventListener('scroll', () => { t && cancelAnimationFrame(t); t = requestAnimationFrame(() => scrolled = window.scrollY > 24); }, { passive: true })"
+                    :class="scrolled ? 'h-12 shadow-lg' : 'h-14 md:h-16 shadow-sm'"
+                    class="sticky top-0 z-30 bg-white/75 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 transition-all duration-200">
+                <div class="flex items-center justify-between h-full px-4 md:px-6">
+                    <div class="flex items-center gap-1.5">
+                        <button @@click="sidebarOpen = true"
+                                class="flex lg:hidden p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                             </svg>
                         </button>
                         <button @@click="sidebarCollapsed = !sidebarCollapsed; localStorage.setItem('sidebarCollapsed', sidebarCollapsed)"
-                                class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-1.5 rounded-lg transition-colors"
-                                title="Toggle Sidebar">
+                                class="hidden lg:flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                :title="sidebarCollapsed ? 'Buka Sidebar' : 'Tutup Sidebar'">
                             <template x-if="!sidebarCollapsed">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4l-7 8 7 8m10-16l-7 8 7 8"/>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
                                 </svg>
                             </template>
                             <template x-if="sidebarCollapsed">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 4l7 8-7 8M5 4l7 8-7 8"/>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
                                 </svg>
                             </template>
                         </button>
-                        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@yield('page-title', $title ?? 'Dashboard')</h2>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <div class="text-xs text-gray-500 dark:text-gray-400 hidden md:block">
-                            {{ now()->translatedFormat('l, d F Y') }}
+                        <div class="ml-1.5">
+                            <h2 :class="scrolled ? 'text-sm' : 'text-base'" class="font-semibold text-gray-800 dark:text-gray-100 leading-tight transition-all duration-200">@yield('page-title', $title ?? 'Dashboard')</h2>
+                            <time x-show="!scrolled" x-cloak class="text-[11px] text-gray-400 dark:text-gray-500 hidden md:block">{{ now()->translatedFormat('l, d F Y') }}</time>
                         </div>
+                    </div>
 
+                    <div class="flex items-center gap-1">
                         <button @@click="dark = !dark; localStorage.setItem('darkMode', dark); document.documentElement.classList.toggle('dark')"
-                                class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                class="p-1.5 md:p-2 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                 :title="dark ? 'Mode Terang' : 'Mode Gelap'">
                             <template x-if="!dark">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                                 </svg>
                             </template>
                             <template x-if="dark">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                                 </svg>
                             </template>
                         </button>
 
+                        <span class="mx-1 w-px h-5 bg-gray-200 dark:bg-gray-700"></span>
+
                         <div x-data="{ open: false }" class="relative">
                             <button @@click="open = !open" @@click.outside="open = false"
-                                    class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold text-white hover:bg-emerald-700 transition-colors">
-                                {{ substr(auth()->user()->name, 0, 2) }}
+                                    class="flex items-center gap-2 pl-2 pr-2.5 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                <span class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold text-white shadow-sm">
+                                    {{ substr(auth()->user()->name, 0, 2) }}
+                                </span>
+                                <span class="text-sm font-medium text-gray-700 dark:text-gray-200 hidden md:block">{{ auth()->user()->name }}</span>
+                                <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
                             </button>
 
                             <div x-show="open" x-cloak
                                  @@click.outside="open = false"
-                                 class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
-                                <a href="{{ route('settings') }}" 
-                                   class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                 class="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1.5 z-50">
+                                <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                                    <p class="text-sm font-semibold text-gray-800 dark:text-gray-100">{{ auth()->user()->name }}</p>
+                                    <p class="text-xs text-gray-400 truncate mt-0.5">{{ auth()->user()->email }}</p>
+                                    @if(auth()->user()->roles->isNotEmpty())
+                                    <span class="inline-block mt-1.5 text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                                        {{ auth()->user()->roles->first()->name }}
+                                    </span>
+                                    @endif
+                                </div>
+                                <a href="{{ route('settings') }}"
+                                   class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     </svg>
-                                    Profil
+                                    Pengaturan
                                 </a>
-                                <hr class="border-gray-200 dark:border-gray-700">
+                                <hr class="border-gray-100 dark:border-gray-700">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit"
-                                            class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                                            class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                                         </svg>
