@@ -87,17 +87,7 @@
                 @endforeach
             </nav>
 
-            <div class="border-t border-emerald-700 dark:border-gray-800 p-4">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-xs text-emerald-300 hover:text-white hover:bg-emerald-700 rounded-lg transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
-                        Keluar
-                    </button>
-                </form>
-            </div>
+
         </aside>
 
         <!-- Main content -->
@@ -113,10 +103,36 @@
                         </button>
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@yield('page-title', $title ?? 'Dashboard')</h2>
                     </div>
-                    <div class="flex items-center space-x-4">
-                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                    <div class="flex items-center gap-3">
+                        <div class="text-xs text-gray-500 dark:text-gray-400 hidden md:block">
                             {{ now()->translatedFormat('l, d F Y') }}
                         </div>
+
+                        <button @@click="dark = !dark; localStorage.setItem('darkMode', dark); document.documentElement.classList.toggle('dark')"
+                                class="p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                                :title="dark ? 'Mode Terang' : 'Mode Gelap'">
+                            <template x-if="!dark">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                                </svg>
+                            </template>
+                            <template x-if="dark">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                </svg>
+                            </template>
+                        </button>
+
+                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
+                            <div class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold text-white">
+                                {{ substr(auth()->user()->name, 0, 2) }}
+                            </div>
+                            <div class="hidden md:block leading-tight">
+                                <p class="text-sm font-medium text-gray-800 dark:text-gray-100">{{ auth()->user()->name }}</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ auth()->user()->getRoleNames()->implode(', ') }}</p>
+                            </div>
+                        </div>
+
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" 
