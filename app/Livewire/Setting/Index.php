@@ -60,7 +60,7 @@ class Index extends Component
 
         if ($this->temp_logo) {
             $filename = 'logo.' . $this->temp_logo->getClientOriginalExtension();
-            $this->temp_logo->storeAs('public/settings', $filename);
+            $this->temp_logo->storeAs('settings', $filename, 'public');
             Setting::setValue('store_logo', $filename);
             $this->store_logo = $filename;
             $this->temp_logo = null;
@@ -68,7 +68,7 @@ class Index extends Component
 
         if ($this->remove_logo && !$this->temp_logo) {
             if ($this->store_logo) {
-                Storage::delete('public/settings/' . $this->store_logo);
+                Storage::disk('public')->delete('settings/' . $this->store_logo);
             }
             Setting::setValue('store_logo', '');
             $this->store_logo = '';

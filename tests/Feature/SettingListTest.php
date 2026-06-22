@@ -12,6 +12,7 @@ use Illuminate\Http\UploadedFile;
 use Livewire\Livewire;
 use Tests\TestCase;
 use App\Livewire\Setting\Index as SettingIndex;
+use Illuminate\Support\Facades\Storage;
 
 class SettingListTest extends TestCase
 {
@@ -22,6 +23,7 @@ class SettingListTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        Storage::fake('public');
         $this->seed([RoleSeeder::class, OutletSeeder::class, \Database\Seeders\UnitSeeder::class]);
 
         $outlet = Outlet::first();

@@ -60,7 +60,7 @@
                     <div id="receipt">
                         <div class="text-center mb-3 border-b border-gray-200 dark:border-gray-700 pb-3">
                             @if($storeLogo)
-                            <img src="{{ Storage::url('settings/' . $storeLogo) }}" class="h-12 mx-auto mb-2">
+                            <img src="{{ Storage::disk('public')->url('settings/' . $storeLogo) }}" class="h-12 mx-auto mb-2">
                             @endif
                             <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">{{ $storeName }}</h3>
                             @if($storeAddress)<p class="text-xs text-gray-500 dark:text-gray-400">{{ $storeAddress }}</p>@endif

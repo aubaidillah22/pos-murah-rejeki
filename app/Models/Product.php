@@ -72,7 +72,7 @@ class Product extends Model
     public function getImageUrlAttribute(): ?string
     {
         if ($this->product_image) {
-            return Storage::url('products/' . $this->product_image);
+            return Storage::disk('public')->url('products/' . $this->product_image);
         }
         return null;
     }

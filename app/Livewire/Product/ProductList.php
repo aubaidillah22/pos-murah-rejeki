@@ -112,7 +112,7 @@ class ProductList extends Component
 
         if ($this->product_image) {
             $filename = time() . '_' . $this->product_image->getClientOriginalName();
-            $this->product_image->storeAs('public/products', $filename);
+            $this->product_image->storeAs('products', $filename, 'public');
             $data['product_image'] = $filename;
         }
 
