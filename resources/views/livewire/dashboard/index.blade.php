@@ -1,11 +1,11 @@
 <div>
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Penjualan Hari Ini</p>
-                    <h3 class="text-2xl font-bold text-gray-800 mt-1">Rp {{ number_format($totalSalesToday, 0, ',', '.') }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Penjualan Hari Ini</p>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-1">Rp {{ number_format($totalSalesToday, 0, ',', '.') }}</h3>
                 </div>
                 <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,11 +15,11 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Transaksi Hari Ini</p>
-                    <h3 class="text-2xl font-bold text-gray-800 mt-1">{{ $totalTransactionsToday }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Transaksi Hari Ini</p>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-1">{{ $totalTransactionsToday }}</h3>
                 </div>
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,10 +29,10 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Laba Kotor Hari Ini</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Laba Kotor Hari Ini</p>
                     <h3 class="text-lg font-bold text-green-600 mt-1">Rp {{ number_format($profitToday, 0, ',', '.') }}</h3>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -43,11 +43,11 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Total Produk</p>
-                    <h3 class="text-2xl font-bold text-gray-800 mt-1">{{ $totalProducts }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Produk</p>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-1">{{ $totalProducts }}</h3>
                 </div>
                 <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,11 +57,11 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Total Pelanggan</p>
-                    <h3 class="text-2xl font-bold text-gray-800 mt-1">{{ $totalCustomers }}</h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Total Pelanggan</p>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-1">{{ $totalCustomers }}</h3>
                 </div>
                 <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,11 +74,11 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <!-- Chart Penjualan Bulanan -->
-        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">Grafik Penjualan Bulanan</h3>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Grafik Penjualan Bulanan</h3>
                 <select wire:model.live="selectedYear" 
-                        class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
+                        class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm dark:bg-gray-700 dark:text-gray-100">
                     @for($y = now()->year; $y >= now()->year - 3; $y--)
                     <option value="{{ $y }}">{{ $y }}</option>
                     @endfor
@@ -88,8 +88,8 @@
         </div>
 
         <!-- Pie Chart Metode Pembayaran -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Metode Pembayaran Hari Ini</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Metode Pembayaran Hari Ini</h3>
             @if(count($paymentMethodData) > 0)
             <div id="paymentChart" style="min-height: 250px;"></div>
             <div class="mt-4 space-y-2">
@@ -97,7 +97,7 @@
                 <div class="flex items-center justify-between text-sm">
                     <div class="flex items-center">
                         <span class="w-3 h-3 rounded-full inline-block mr-2" style="background: {{ $pm['color'] }}"></span>
-                        <span class="text-gray-600">{{ $pm['label'] }}</span>
+                        <span class="text-gray-600 dark:text-gray-300">{{ $pm['label'] }}</span>
                     </div>
                     <span class="font-medium">Rp {{ number_format($pm['value'], 0, ',', '.') }}</span>
                 </div>
@@ -112,18 +112,18 @@
     <!-- Row 2: Top Products + Recent Transactions + Top Cashier -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         <!-- Produk Terlaris -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">🏆 Produk Terlaris Hari Ini</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">🏆 Produk Terlaris Hari Ini</h3>
             <div class="space-y-3">
                 @forelse($topSellingProducts as $index => $product)
-                <div class="flex items-center justify-between {{ $index > 0 ? 'pt-3 border-t border-gray-100' : '' }}">
+                <div class="flex items-center justify-between {{ $index > 0 ? 'pt-3 border-t border-gray-100 dark:border-gray-700' : '' }}">
                     <div class="flex items-center flex-1 min-w-0">
-                        <span class="w-6 h-6 rounded-full {{ $index == 0 ? 'bg-yellow-100 text-yellow-700' : ($index == 1 ? 'bg-gray-100 text-gray-600' : ($index == 2 ? 'bg-amber-100 text-amber-700' : 'bg-gray-50 text-gray-400')) }} flex items-center justify-center text-xs font-bold mr-3">
+                        <span class="w-6 h-6 rounded-full {{ $index == 0 ? 'bg-yellow-100 text-yellow-700' : ($index == 1 ? 'bg-gray-100 dark:bg-gray-600 text-gray-600' : ($index == 2 ? 'bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300' : 'bg-gray-50 text-gray-400')) }} flex items-center justify-center text-xs font-bold mr-3">
                             {{ $index + 1 }}
                         </span>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-800 truncate">{{ $product->name }}</p>
-                            <p class="text-xs text-gray-500">{{ $product->category?->name }} - {{ $product->unit?->name }}</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{{ $product->name }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $product->category?->name }} - {{ $product->unit?->name }}</p>
                         </div>
                     </div>
                     <span class="text-sm font-semibold text-emerald-600 ml-2">{{ $product->total_sold }}</span>
@@ -135,17 +135,17 @@
         </div>
 
         <!-- Transaksi Terbaru -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
             <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-800">📋 Transaksi Terbaru</h3>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">📋 Transaksi Terbaru</h3>
                 <a href="{{ route('transactions') }}" class="text-sm text-emerald-600 hover:text-emerald-700">Lihat Semua</a>
             </div>
             <div class="space-y-3">
                 @forelse($recentTransactions as $t)
-                <div class="flex items-center justify-between {{ !$loop->first ? 'pt-3 border-t border-gray-100' : '' }}">
+                <div class="flex items-center justify-between {{ !$loop->first ? 'pt-3 border-t border-gray-100 dark:border-gray-700' : '' }}">
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-800 truncate">{{ $t->invoice_number }}</p>
-                        <p class="text-xs text-gray-500">
+                        <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{{ $t->invoice_number }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
                             {{ $t->customer?->name ?? 'Umum' }} — {{ $t->transaction_date->format('H:i') }}
                         </p>
                     </div>
@@ -163,18 +163,18 @@
         </div>
 
         <!-- Top Kasir -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">👨‍💼 Kinerja Kasir Hari Ini</h3>
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">👨‍💼 Kinerja Kasir Hari Ini</h3>
             <div class="space-y-3">
                 @forelse($topCashierToday as $index => $cashier)
-                <div class="flex items-center justify-between {{ $index > 0 ? 'pt-3 border-t border-gray-100' : '' }}">
+                <div class="flex items-center justify-between {{ $index > 0 ? 'pt-3 border-t border-gray-100 dark:border-gray-700' : '' }}">
                     <div class="flex items-center flex-1 min-w-0">
-                        <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-xs font-bold text-emerald-700 mr-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center text-xs font-bold text-emerald-700 dark:text-emerald-300 mr-3">
                             {{ substr($cashier->user?->name ?? '?', 0, 2) }}
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-sm font-medium text-gray-800 truncate">{{ $cashier->user?->name ?? '-' }}</p>
-                            <p class="text-xs text-gray-500">{{ $cashier->total_trans }} transaksi</p>
+                            <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{{ $cashier->user?->name ?? '-' }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">{{ $cashier->total_trans }} transaksi</p>
                         </div>
                     </div>
                     <span class="text-sm font-semibold text-emerald-600">Rp {{ number_format($cashier->total_amount, 0, ',', '.') }}</span>
@@ -187,17 +187,17 @@
     </div>
 
     <!-- Notifikasi Stok Menipis -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5">
         <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-semibold text-gray-800">⚠️ Notifikasi Stok Menipis</h3>
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">⚠️ Notifikasi Stok Menipis</h3>
             <a href="{{ route('products') }}" class="text-sm text-emerald-600 hover:text-emerald-700">Lihat Semua</a>
         </div>
         @if($lowStockProducts->count() > 0)
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             @foreach($lowStockProducts as $product)
-            <div class="flex items-center justify-between bg-red-50 rounded-lg p-3 border border-red-100">
+            <div class="flex items-center justify-between bg-red-50 dark:bg-red-900/30 rounded-lg p-3 border border-red-100 dark:border-red-700">
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-gray-800 truncate">{{ $product->name }}</p>
+                    <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{{ $product->name }}</p>
                     <p class="text-xs text-red-600">Stok: {{ $product->stock }} {{ $product->unit?->name }} (Min: {{ $product->min_stock_alert }})</p>
                 </div>
                 <a href="{{ route('purchases') }}" class="text-xs px-2 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700 ml-2">Pesan</a>
