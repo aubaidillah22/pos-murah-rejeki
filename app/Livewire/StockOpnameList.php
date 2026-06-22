@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\CashFlow;
 use App\Models\Product;
 use App\Models\StockOpname;
+use App\Services\StockService;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -117,8 +118,15 @@ class StockOpnameList extends Component
                 'notes' => $this->notes,
             ]);
 
-            // Update product stock
-            $product->update(['stock' => $this->actual_stock]);
+            // Update product stock via StockService
+            app(StockService::class)->sync(
+                product: $product,
+                newStock: $this->actual_stock,
+                type: 'stock_opname',
+                reference: $product,
+                description: "Stok Opname {$opnameNumber}: {$product->name} ({$systemStock} → {$this->actual_stock}, selisih: {$difference})",
+                outletId: auth()->user()->outlet_id,
+            );
 
             // Log activity
             activity()

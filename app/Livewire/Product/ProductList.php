@@ -5,6 +5,7 @@ namespace App\Livewire\Product;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Unit;
+use App\Services\StockService;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -123,7 +124,17 @@ class ProductList extends Component
             session()->flash('success', 'Produk berhasil diupdate!');
         } else {
             $data['outlet_id'] = auth()->user()->outlet_id;
+            $initialStock = $data['stock'];
+            $data['stock'] = 0;
             $product = Product::create($data);
+            if ($initialStock > 0) {
+                app(StockService::class)->setInitial(
+                    product: $product,
+                    stock: $initialStock,
+                    description: 'Stok awal saat pembuatan produk',
+                    outletId: $data['outlet_id'],
+                );
+            }
             activity()->performedOn($product)->log('Produk dibuat: ' . $product->name);
             session()->flash('success', 'Produk berhasil ditambahkan!');
         }
@@ -181,7 +192,10 @@ class ProductList extends Component
             $category = Category::where('name', $row['Kategori'] ?? '')->first();
             $unit = Unit::where('name', $row['Satuan'] ?? '')->first();
 
-            Product::updateOrCreate(
+            $importStock = (int) ($row['Stok'] ?? 0);
+            $outletId = auth()->user()->outlet_id;
+
+            $product = Product::updateOrCreate(
                 ['sku' => $row['SKU'] ?? null],
                 [
                     'name' => $row['Nama'],
@@ -189,12 +203,21 @@ class ProductList extends Component
                     'unit_id' => $unit?->id,
                     'purchase_price' => $row['Harga Beli'] ?? 0,
                     'selling_price' => $row['Harga Jual'] ?? 0,
-                    'stock' => $row['Stok'] ?? 0,
+                    'stock' => 0,
                     'min_stock_alert' => $row['Min Stok'] ?? 0,
-                    'outlet_id' => auth()->user()->outlet_id,
+                    'outlet_id' => $outletId,
                     'is_active' => true,
                 ]
             );
+
+            if ($importStock > 0) {
+                app(StockService::class)->setInitial(
+                    product: $product,
+                    stock: $importStock,
+                    description: 'Stok awal dari import Excel',
+                    outletId: $outletId,
+                );
+            }
         }
 
         $this->showImportModal = false;

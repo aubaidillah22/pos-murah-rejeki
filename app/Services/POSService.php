@@ -6,6 +6,7 @@ use App\Models\CashFlow;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionDetail;
+use App\Services\StockService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -64,8 +65,15 @@ class POSService
                     'sub_total' => $subTotal - $itemDiscount,
                 ]);
 
-                // Reduce stock
-                $product->decrement('stock', $item['quantity']);
+                // Reduce stock via StockService
+                app(StockService::class)->decrease(
+                    product: $product,
+                    quantity: $item['quantity'],
+                    type: 'sale',
+                    reference: $transaction,
+                    description: "Penjualan {$transaction->invoice_number}: {$product->name} x{$item['quantity']}",
+                    outletId: $data['outlet_id'],
+                );
 
                 // Log low stock
                 if ($product->isStockLow()) {
@@ -114,10 +122,17 @@ class POSService
                 throw new \Exception('Transaksi sudah di-void sebelumnya.');
             }
 
-            // Restore stock for all products
+            // Restore stock via StockService
             foreach ($transaction->details as $detail) {
                 if ($detail->product) {
-                    $detail->product->increment('stock', $detail->quantity);
+                    app(StockService::class)->increase(
+                        product: $detail->product,
+                        quantity: $detail->quantity,
+                        type: 'void',
+                        reference: $transaction,
+                        description: "Void {$transaction->invoice_number}: {$detail->product->name} x{$detail->quantity}",
+                        outletId: $transaction->outlet_id,
+                    );
                 }
             }
 

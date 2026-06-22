@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\PurchaseOrder;
 use App\Models\PurchaseOrderDetail;
 use App\Models\Supplier;
+use App\Services\StockService;
 use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -117,7 +118,14 @@ class PurchaseList extends Component
         foreach ($po->details as $detail) {
             $product = Product::find($detail->product_id);
             if ($product) {
-                $product->increment('stock', $detail->quantity);
+                app(StockService::class)->increase(
+                    product: $product,
+                    quantity: $detail->quantity,
+                    type: 'purchase_receive',
+                    reference: $po,
+                    description: "Penerimaan PO {$po->invoice_number}: {$product->name} x{$detail->quantity}",
+                    outletId: $po->outlet_id,
+                );
             }
         }
 
