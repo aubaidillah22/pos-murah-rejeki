@@ -17,7 +17,7 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-sans antialiased">
-    <div x-data="{ sidebarOpen: false, dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" class="min-h-screen">
+    <div x-data="{ sidebarOpen: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true', dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" class="min-h-screen">
         <!-- Mobile overlay -->
         <div x-show="sidebarOpen" x-cloak 
              class="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -29,8 +29,8 @@
             $settingsStoreName = \App\Models\Setting::getValue('store_name', config('app.name'));
             $settingsStoreLogo = \App\Models\Setting::getValue('store_logo', '');
         @endphp
-        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-800 dark:bg-gray-950 text-white transform transition-transform duration-200 lg:translate-x-0"
-               :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-800 dark:bg-gray-950 text-white transform transition-all duration-200"
+               :class="[sidebarOpen ? 'translate-x-0' : '-translate-x-full', sidebarCollapsed ? 'lg:-translate-x-full' : 'lg:translate-x-0']">
             <div class="flex items-center justify-between h-16 px-4 border-b border-emerald-700 dark:border-gray-800">
                 <div class="flex items-center space-x-2">
                     @if($settingsStoreLogo)
@@ -91,15 +91,29 @@
         </aside>
 
         <!-- Main content -->
-        <div class="lg:pl-64">
+        <div :class="sidebarCollapsed ? 'lg:pl-0' : 'lg:pl-64'" class="transition-all duration-200">
             <!-- Top bar -->
             <header class="sticky top-0 z-30 bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
                 <div class="flex items-center justify-between h-16 px-4">
-                    <div class="flex items-center">
-                        <button @@click="sidebarOpen = true" class="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mr-3">
+                    <div class="flex items-center gap-2">
+                        <button @@click="sidebarOpen = true" class="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                             </svg>
+                        </button>
+                        <button @@click="sidebarCollapsed = !sidebarCollapsed; localStorage.setItem('sidebarCollapsed', sidebarCollapsed)"
+                                class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 p-1.5 rounded-lg transition-colors"
+                                title="Toggle Sidebar">
+                            <template x-if="!sidebarCollapsed">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4l-7 8 7 8m10-16l-7 8 7 8"/>
+                                </svg>
+                            </template>
+                            <template x-if="sidebarCollapsed">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 4l7 8-7 8M5 4l7 8-7 8"/>
+                                </svg>
+                            </template>
                         </button>
                         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@yield('page-title', $title ?? 'Dashboard')</h2>
                     </div>
@@ -123,27 +137,35 @@
                             </template>
                         </button>
 
-                        <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-700">
-                            <div class="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold text-white">
+                        <div x-data="{ open: false }" class="relative">
+                            <button @@click="open = !open" @@click.outside="open = false"
+                                    class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold text-white hover:bg-emerald-700 transition-colors">
                                 {{ substr(auth()->user()->name, 0, 2) }}
-                            </div>
-                            <div class="hidden md:block leading-tight">
-                                <p class="text-sm font-medium text-gray-800 dark:text-gray-100">{{ auth()->user()->name }}</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">{{ auth()->user()->getRoleNames()->implode(', ') }}</p>
+                            </button>
+
+                            <div x-show="open" x-cloak
+                                 @@click.outside="open = false"
+                                 class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                                <a href="{{ route('settings') }}" 
+                                   class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                    Profil
+                                </a>
+                                <hr class="border-gray-200 dark:border-gray-700">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                            class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                        </svg>
+                                        Keluar
+                                    </button>
+                                </form>
                             </div>
                         </div>
-
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" 
-                                    class="flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                                    title="Keluar">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                                </svg>
-                                <span class="hidden sm:inline">Keluar</span>
-                            </button>
-                        </form>
                     </div>
                 </div>
             </header>
