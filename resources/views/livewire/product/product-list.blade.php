@@ -1,0 +1,191 @@
+<div>
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <div class="flex-1 flex items-center gap-2">
+            <div class="relative flex-1 max-w-md">
+                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari produk..."
+                       class="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm">
+                <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+            <select wire:model.live="category_id" class="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                <option value="">Semua Kategori</option>
+                @foreach($categories as $cat)
+                <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="flex gap-2">
+            <button wire:click="exportExcel" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                ⬇ Ekspor
+            </button>
+            <button wire:click="$toggle('showImportModal')" class="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">
+                ⬆ Impor
+            </button>
+            <button wire:click="create" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">
+                + Tambah Produk
+            </button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th wire:click="sortBy('name')" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700">
+                            Nama @if($sortField === 'name') {{ $sortDirection === 'asc' ? '↑' : '↓' }} @endif
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">SKU</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kategori</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Harga Jual</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Stok</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    @forelse($products as $product)
+                    <tr class="hover:bg-gray-50 {{ !$product->is_active ? 'opacity-50' : '' }}">
+                        <td class="px-4 py-3 text-sm font-medium text-gray-800">{{ $product->name }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500">{{ $product->sku ?? '-' }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500">{{ $product->category?->name ?? '-' }}</td>
+                        <td class="px-4 py-3 text-sm font-medium text-emerald-600">Rp {{ number_format($product->selling_price, 0, ',', '.') }}</td>
+                        <td class="px-4 py-3 text-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {{ $product->isStockLow() ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
+                                {{ $product->stock }} {{ $product->unit?->name ?? 'Unit' }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <button wire:click="edit({{ $product->id }})" class="text-emerald-600 hover:text-emerald-800 text-sm mr-2">Edit</button>
+                            <button wire:click="confirmDelete({{ $product->id }})" class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Belum ada produk</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="px-4 py-3 border-t border-gray-200">
+            {{ $products->links() }}
+        </div>
+    </div>
+
+    <!-- Form Modal -->
+    @if($showForm)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-lg w-full mx-4 my-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold">{{ $product_id ? 'Edit Produk' : 'Tambah Produk' }}</h3>
+                <button wire:click="$set('showForm', false)" class="text-gray-400 hover:text-gray-600">&times;</button>
+            </div>
+            <form wire:submit="save" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nama Produk *</label>
+                    <input type="text" wire:model="name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required>
+                    @error('name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">SKU</label>
+                        <input type="text" wire:model="sku" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Barcode</label>
+                        <input type="text" wire:model="barcode" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                        <select wire:model="selected_category_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="">Pilih Kategori</option>
+                            @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Satuan</label>
+                        <select wire:model="selected_unit_id" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="">Pilih Satuan</option>
+                            @foreach($units as $unit)
+                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Harga Beli *</label>
+                        <input type="number" wire:model="purchase_price" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Harga Jual *</label>
+                        <input type="number" wire:model="selling_price" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Stok Awal *</label>
+                        <input type="number" wire:model="stock" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Min. Stok Alert</label>
+                        <input type="number" wire:model="min_stock_alert" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                    <textarea wire:model="description" rows="2" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"></textarea>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" wire:model="is_active" id="is_active" class="rounded border-gray-300">
+                    <label for="is_active" class="text-sm text-gray-700">Aktif</label>
+                </div>
+                <div class="flex gap-2 justify-end pt-2">
+                    <button type="button" wire:click="$set('showForm', false)" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">
+                        {{ $product_id ? 'Update' : 'Simpan' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+
+    <!-- Delete Modal -->
+    @if($showDeleteModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Hapus Produk?</h3>
+            <p class="text-sm text-gray-500 mb-4">Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="flex gap-2 justify-end">
+                <button wire:click="$set('showDeleteModal', false)" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Batal</button>
+                <button wire:click="delete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">Hapus</button>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Import Modal -->
+    @if($showImportModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Import Produk dari Excel</h3>
+            <p class="text-sm text-gray-500 mb-4">Format: Nama, SKU, Kategori, Satuan, Harga Beli, Harga Jual, Stok, Min Stok</p>
+            <form wire:submit="importExcel">
+                <input type="file" wire:model="importFile" accept=".xlsx,.xls,.csv" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4">
+                @error('importFile') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                <div class="flex gap-2 justify-end">
+                    <button type="button" wire:click="$set('showImportModal', false)" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endif
+</div>
