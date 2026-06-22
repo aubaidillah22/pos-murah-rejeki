@@ -210,7 +210,7 @@ class Index extends Component
 
             $this->lastTransaction = $posService->processTransaction([
                 'items' => $items,
-                'customer_id' => $this->customer_id ?: 1, // Default customer
+                'customer_id' => $this->customer_id,
                 'outlet_id' => auth()->user()->outlet_id,
                 'user_id' => auth()->id(),
                 'discount' => $this->discount,

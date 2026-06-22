@@ -68,7 +68,13 @@ class ReportService
     {
         return CashFlow::whereBetween('created_at', [$startDate, $endDate . ' 23:59:59'])
             ->when($outletId, function ($q) use ($outletId) {
-                // Cash flow melalui transaksi, filter outlet
+                $q->where(function ($subQuery) use ($outletId) {
+                    $subQuery->whereHasMorph('reference', [Transaction::class], function ($q) use ($outletId) {
+                        $q->where('outlet_id', $outletId);
+                    })->orWhereHasMorph('reference', [Expense::class], function ($q) use ($outletId) {
+                        $q->where('outlet_id', $outletId);
+                    });
+                });
             })
             ->orderBy('created_at', 'desc')
             ->get();

@@ -51,11 +51,7 @@
             </button>
         </form>
 
-        <div class="mt-6 text-center text-xs text-gray-400">
-            <p>Akun Demo:</p>
-            <p class="mt-1">Admin: admin@murahrejeki.com / password</p>
-            <p>Kasir: kasir1@murahrejeki.com / password</p>
-        </div>
+
     </div>
 </body>
 </html>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class CashFlow extends Model
 {
@@ -22,5 +23,10 @@ class CashFlow extends Model
         return [
             'amount' => 'decimal:2',
         ];
+    }
+
+    public function reference(): MorphTo
+    {
+        return $this->morphTo();
     }
 }

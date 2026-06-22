@@ -149,7 +149,9 @@ class ProductList extends Component
 
     public function exportExcel()
     {
-        $products = Product::with(['category', 'unit'])->get();
+        $products = Product::with(['category', 'unit'])
+            ->when(auth()->user()->outlet_id, fn($q) => $q->where('outlet_id', auth()->user()->outlet_id))
+            ->get();
         $exportData = $products->map(function ($p) {
             return [
                 'Nama' => $p->name,
