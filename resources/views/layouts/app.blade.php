@@ -7,12 +7,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+        if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <style>
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-gray-50 font-sans antialiased">
-    <div x-data="{ sidebarOpen: false }" class="min-h-screen">
+<body class="bg-gray-50 dark:bg-gray-900 font-sans antialiased">
+    <div x-data="{ sidebarOpen: false, dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" class="min-h-screen">
         <!-- Mobile overlay -->
         <div x-show="sidebarOpen" x-cloak 
              class="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -20,9 +25,9 @@
         </div>
 
         <!-- Sidebar -->
-        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-800 text-white transform transition-transform duration-200 lg:translate-x-0"
+        <aside class="fixed inset-y-0 left-0 z-50 w-64 bg-emerald-800 dark:bg-gray-950 text-white transform transition-transform duration-200 lg:translate-x-0"
                :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
-            <div class="flex items-center justify-between h-16 px-4 border-b border-emerald-700">
+            <div class="flex items-center justify-between h-16 px-4 border-b border-emerald-700 dark:border-gray-800">
                 <div class="flex items-center space-x-2">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
@@ -74,7 +79,22 @@
                 @endforeach
             </nav>
 
-            <div class="border-t border-emerald-700 p-4">
+            <div class="border-t border-emerald-700 dark:border-gray-800 p-4 space-y-2">
+                <button @@click="dark = !dark; localStorage.setItem('darkMode', dark); document.documentElement.classList.toggle('dark')"
+                        class="w-full flex items-center gap-2 px-3 py-2 text-xs text-emerald-300 hover:text-white hover:bg-emerald-700 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                    <template x-if="!dark">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </template>
+                    <template x-if="dark">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                    </template>
+                    <span x-text="dark ? 'Mode Terang' : 'Mode Gelap'"></span>
+                </button>
+
                 <div class="flex items-center space-x-3">
                     <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-xs font-bold">
                         {{ substr(auth()->user()->name, 0, 2) }}
@@ -96,18 +116,18 @@
         <!-- Main content -->
         <div class="lg:pl-64">
             <!-- Top bar -->
-            <header class="sticky top-0 z-30 bg-white shadow-sm border-b">
+            <header class="sticky top-0 z-30 bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700">
                 <div class="flex items-center justify-between h-16 px-4">
                     <div class="flex items-center">
-                        <button @@click="sidebarOpen = true" class="lg:hidden text-gray-500 hover:text-gray-700 mr-3">
+                        <button @@click="sidebarOpen = true" class="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mr-3">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                             </svg>
                         </button>
-                        <h2 class="text-lg font-semibold text-gray-800">@yield('page-title', $title ?? 'Dashboard')</h2>
+                        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">@yield('page-title', $title ?? 'Dashboard')</h2>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <div class="text-xs text-gray-500">
+                        <div class="text-xs text-gray-500 dark:text-gray-400">
                             {{ now()->translatedFormat('l, d F Y') }}
                         </div>
                         <form method="POST" action="{{ route('logout') }}">
@@ -128,14 +148,14 @@
             <!-- Page content -->
             <main class="p-4 md:p-6">
                 @if(session('success'))
-                <div class="bg-emerald-50 border border-emerald-300 text-emerald-700 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
+                <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
                     <span>{{ session('success') }}</span>
                     <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">&times;</button>
                 </div>
                 @endif
 
                 @if(session('error'))
-                <div class="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
+                <div class="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
                     <span>{{ session('error') }}</span>
                     <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700">&times;</button>
                 </div>
