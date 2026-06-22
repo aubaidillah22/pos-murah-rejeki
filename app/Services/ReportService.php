@@ -42,7 +42,7 @@ class ReportService
         $hpp = Transaction::whereBetween('transaction_date', [$startDate, $endDate . ' 23:59:59'])
             ->where('payment_status', 'paid')
             ->whereNull('voided_at')
-            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
             ->join('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
             ->join('products', 'transaction_details.product_id', '=', 'products.id')
             ->sum(DB::raw('transaction_details.quantity * products.purchase_price'));

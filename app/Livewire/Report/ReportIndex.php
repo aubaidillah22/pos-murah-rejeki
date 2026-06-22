@@ -138,7 +138,7 @@ class ReportIndex extends Component
         } elseif ($this->activeTab === 'stock') {
             $stockReport = $reportService->getStockReport($outletId);
         } elseif ($this->activeTab === 'cashflow') {
-            $cashFlow = $reportService->getCashFlow($this->dateFrom, $this->dateTo);
+            $cashFlow = $reportService->getCashFlow($this->dateFrom, $this->dateTo, $outletId);
         } elseif ($this->activeTab === 'expenses') {
             $expenses = Expense::whereBetween('expense_date', [$this->dateFrom, $this->dateTo])
                 ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))

@@ -114,6 +114,13 @@
                 <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Tidak ada data stok</td></tr>
                 @endforelse
             </tbody>
+            <tfoot class="bg-gray-50 dark:bg-gray-700 font-semibold">
+                <tr>
+                    <td colspan="3" class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Total Produk: {{ $stockReport->count() }}</td>
+                    <td class="px-4 py-3 text-sm text-right">{{ number_format($stockReport->sum('stock')) }}</td>
+                    <td colspan="2"></td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 
@@ -146,10 +153,65 @@
                 <tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">Tidak ada data arus kas</td></tr>
                 @endforelse
             </tbody>
+            <tfoot class="bg-gray-50 dark:bg-gray-700 font-semibold">
+                <tr>
+                    <td colspan="3" class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+                        <span class="text-green-600">Pemasukan: Rp {{ number_format($cashFlow->where('transaction_type', 'income')->sum('amount'), 0, ',', '.') }}</span>
+                        <span class="mx-2">|</span>
+                        <span class="text-red-600">Pengeluaran: Rp {{ number_format($cashFlow->where('transaction_type', 'expense')->sum('amount'), 0, ',', '.') }}</span>
+                        <span class="mx-2">|</span>
+                        <span class="{{ $cashFlow->where('transaction_type', 'income')->sum('amount') - $cashFlow->where('transaction_type', 'expense')->sum('amount') >= 0 ? 'text-emerald-600' : 'text-red-600' }}">
+                            Saldo: Rp {{ number_format($cashFlow->where('transaction_type', 'income')->sum('amount') - $cashFlow->where('transaction_type', 'expense')->sum('amount'), 0, ',', '.') }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm text-right"></td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 
     @elseif($activeTab === 'expenses')
-    <livewire:expense.expense-list />
+    <div class="mb-3">
+        <select wire:model.live="category" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100">
+            <option value="">Semua Kategori</option>
+            <option value="Listrik">Listrik</option>
+            <option value="Air">Air</option>
+            <option value="Gaji">Gaji</option>
+            <option value="Transport">Transport</option>
+            <option value="Sewa">Sewa</option>
+            <option value="ATK">ATK</option>
+            <option value="Lainnya">Lainnya</option>
+        </select>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tanggal</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Deskripsi</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Kategori</th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Jumlah</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                @forelse($expenses as $e)
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $e->expense_date->format('d/m/Y') }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-800 dark:text-gray-100">{{ $e->description }}</td>
+                    <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $e->category ?? '-' }}</td>
+                    <td class="px-4 py-3 text-sm font-medium text-right text-red-600">Rp {{ number_format($e->amount, 0, ',', '.') }}</td>
+                </tr>
+                @empty
+                <tr><td colspan="4" class="px-4 py-8 text-center text-gray-400">Tidak ada data pengeluaran</td></tr>
+                @endforelse
+            </tbody>
+            <tfoot class="bg-gray-50 dark:bg-gray-700 font-semibold">
+                <tr>
+                    <td colspan="3" class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">Total</td>
+                    <td class="px-4 py-3 text-sm text-right text-red-600">Rp {{ number_format($expenses->sum('amount'), 0, ',', '.') }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
     @endif
 </div>
