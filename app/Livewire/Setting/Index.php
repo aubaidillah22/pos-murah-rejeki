@@ -21,6 +21,18 @@ class Index extends Component
     public $temp_logo;
     public $remove_logo = false;
 
+    // Receipt customization
+    public $receipt_width = '80mm';
+    public $receipt_show_logo = true;
+    public $receipt_show_address = true;
+    public $receipt_show_phone = true;
+    public $receipt_show_tax = true;
+    public $receipt_show_discount = true;
+    public $receipt_show_payment_method = true;
+    public $receipt_show_change = true;
+    public $receipt_show_sku = false;
+    public $receipt_header = '';
+
     public function mount()
     {
         $this->loadSettings();
@@ -34,6 +46,16 @@ class Index extends Component
         $this->store_address = Setting::getValue('store_address', '');
         $this->receipt_footer = Setting::getValue('receipt_footer', 'Terima kasih telah berbelanja di toko kami.');
         $this->store_logo = Setting::getValue('store_logo', '');
+        $this->receipt_width = Setting::getValue('receipt_width', '80mm');
+        $this->receipt_show_logo = Setting::getValue('receipt_show_logo', '1') === '1';
+        $this->receipt_show_address = Setting::getValue('receipt_show_address', '1') === '1';
+        $this->receipt_show_phone = Setting::getValue('receipt_show_phone', '1') === '1';
+        $this->receipt_show_tax = Setting::getValue('receipt_show_tax', '1') === '1';
+        $this->receipt_show_discount = Setting::getValue('receipt_show_discount', '1') === '1';
+        $this->receipt_show_payment_method = Setting::getValue('receipt_show_payment_method', '1') === '1';
+        $this->receipt_show_change = Setting::getValue('receipt_show_change', '1') === '1';
+        $this->receipt_show_sku = Setting::getValue('receipt_show_sku', '0') === '1';
+        $this->receipt_header = Setting::getValue('receipt_header', '');
     }
 
     protected function rules()
@@ -44,6 +66,8 @@ class Index extends Component
             'store_phone' => 'nullable|string|max:20',
             'store_address' => 'nullable|string|max:500',
             'receipt_footer' => 'nullable|string|max:500',
+            'receipt_header' => 'nullable|string|max:500',
+            'receipt_width' => 'required|in:58mm,80mm',
             'temp_logo' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ];
     }
@@ -57,6 +81,16 @@ class Index extends Component
         Setting::setValue('store_phone', $this->store_phone);
         Setting::setValue('store_address', $this->store_address);
         Setting::setValue('receipt_footer', $this->receipt_footer);
+        Setting::setValue('receipt_width', $this->receipt_width);
+        Setting::setValue('receipt_show_logo', $this->receipt_show_logo ? '1' : '0');
+        Setting::setValue('receipt_show_address', $this->receipt_show_address ? '1' : '0');
+        Setting::setValue('receipt_show_phone', $this->receipt_show_phone ? '1' : '0');
+        Setting::setValue('receipt_show_tax', $this->receipt_show_tax ? '1' : '0');
+        Setting::setValue('receipt_show_discount', $this->receipt_show_discount ? '1' : '0');
+        Setting::setValue('receipt_show_payment_method', $this->receipt_show_payment_method ? '1' : '0');
+        Setting::setValue('receipt_show_change', $this->receipt_show_change ? '1' : '0');
+        Setting::setValue('receipt_show_sku', $this->receipt_show_sku ? '1' : '0');
+        Setting::setValue('receipt_header', $this->receipt_header);
 
         if ($this->temp_logo) {
             $filename = 'logo.' . $this->temp_logo->getClientOriginalExtension();

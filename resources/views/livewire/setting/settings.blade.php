@@ -135,43 +135,127 @@
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Kustomisasi Struk Transaksi</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400">Sesuaikan tampilan struk yang dicetak setelah transaksi POS.</p>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ukuran Struk</label>
+                    <select wire:model="receipt_width" class="input">
+                        <option value="80mm">80mm (Thermal Lebar)</option>
+                        <option value="58mm">58mm (Thermal Sempit)</option>
+                    </select>
+                    <p class="text-xs text-gray-400 mt-1">Pilih ukuran kertas struk sesuai printer thermal</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pesan Kepala Struk</label>
+                    <textarea wire:model="receipt_header" rows="2" maxlength="500"
+                              placeholder="Terima kasih sudah berbelanja..."
+                              class="input"></textarea>
+                    @error('receipt_header') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                    <p class="text-xs text-gray-400 mt-1">Pesan tambahan di bagian atas struk</p>
+                </div>
+            </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Pesan Kaki Struk</label>
-                <textarea wire:model="receipt_footer" rows="3" maxlength="500"
+                <textarea wire:model="receipt_footer" rows="2" maxlength="500"
                           placeholder="Terima kasih telah berbelanja di toko kami."
                           class="input"></textarea>
                 @error('receipt_footer') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
-                <p class="text-xs text-gray-400 mt-1">
-                    Pesan ini akan muncul di bagian bawah setiap struk transaksi. Maksimal 500 karakter.
-                </p>
+                <p class="text-xs text-gray-400 mt-1">Pesan di bagian bawah struk. Maksimal 500 karakter.</p>
+            </div>
+
+            <!-- Tampilkan / Sembunyikan Elemen -->
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+                <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">👁️ Tampilkan / Sembunyikan Elemen</h4>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" wire:model="receipt_show_logo" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                        Logo Toko
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" wire:model="receipt_show_address" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                        Alamat Toko
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" wire:model="receipt_show_phone" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                        Telepon Toko
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" wire:model="receipt_show_tax" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                        Detail Pajak
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" wire:model="receipt_show_discount" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                        Detail Diskon
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" wire:model="receipt_show_payment_method" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                        Metode Bayar
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" wire:model="receipt_show_change" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                        Kembalian
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer">
+                        <input type="checkbox" wire:model="receipt_show_sku" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+                        SKU Produk
+                    </label>
+                </div>
             </div>
 
             <!-- Receipt Preview -->
-            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4">
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 overflow-x-auto">
                 <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">📋 Pratinjau Struk</h4>
-                <div id="receipt-preview" class="bg-white dark:bg-gray-800 rounded-lg mx-auto p-4 text-xs" style="max-width: 80mm;">
+                <div id="receipt-preview" class="bg-white dark:bg-gray-800 rounded-lg mx-auto p-3 sm:p-4 text-xs" style="max-width: min(100%, {{ $receipt_width === '58mm' ? '58mm' : '80mm' }}); width: {{ $receipt_width === '58mm' ? '58mm' : '80mm' }};">
                     <div class="text-center border-b border-gray-300 dark:border-gray-600 pb-2 mb-2">
-                        @if($store_logo)
+                        @if($store_logo && $receipt_show_logo)
                             <img src="{{ Storage::disk('public')->url('settings/' . $store_logo) }}" class="h-10 mx-auto mb-1">
                         @endif
                         <div class="font-bold text-sm">{{ $store_name ?: 'Nama Toko' }}</div>
-                        @if($store_address)
+                        @if($store_address && $receipt_show_address)
                             <div class="text-gray-500">{{ $store_address }}</div>
                         @endif
-                        @if($store_phone)
+                        @if($store_phone && $receipt_show_phone)
                             <div class="text-gray-500">Telp: {{ $store_phone }}</div>
                         @endif
                     </div>
-                    <div class="text-center text-gray-400 mb-2">Struk Transaksi</div>
+                    @if($receipt_header)
+                    <div class="text-center text-gray-500 italic mb-2">{{ $receipt_header }}</div>
+                    @endif
+                    <div class="text-center text-gray-400 mb-2">#INV-20260623-0001</div>
                     <div class="border-b border-dashed border-gray-300 dark:border-gray-600 pb-1 mb-1">
-                        <div class="flex justify-between"><span>Produk</span><span>Rp 0</span></div>
-                        <div class="flex justify-between text-gray-400">Diskon<span>-Rp 0</span></div>
+                        <div class="flex justify-between"><span>Produk A x2</span><span>Rp 20.000</span></div>
+                        <div class="flex justify-between"><span>Produk B x1</span><span>Rp 15.000</span></div>
                     </div>
+                    @if($receipt_show_discount)
+                    <div class="flex justify-between text-gray-400">
+                        <span>Diskon</span><span>-Rp 5.000</span>
+                    </div>
+                    @endif
+                    @if($receipt_show_tax)
+                    <div class="flex justify-between text-gray-400">
+                        <span>Pajak (11%)</span><span>Rp 3.300</span>
+                    </div>
+                    @endif
                     <div class="flex justify-between font-bold border-b border-gray-300 dark:border-gray-600 pb-2 mb-2">
-                        <span>Total</span><span>Rp 0</span>
+                        <span>Total</span><span>Rp 33.300</span>
                     </div>
+                    <div class="flex justify-between text-gray-500">
+                        <span>Bayar</span><span>Rp 50.000</span>
+                    </div>
+                    @if($receipt_show_change)
+                    <div class="flex justify-between text-gray-500">
+                        <span>Kembali</span><span>Rp 16.700</span>
+                    </div>
+                    @endif
+                    @if($receipt_show_payment_method)
+                    <div class="flex justify-between text-gray-500">
+                        <span>Metode</span><span>Tunai</span>
+                    </div>
+                    @endif
+                    <div class="text-center text-gray-400 text-xs mt-1">{{ now()->format('d/m/Y H:i') }}</div>
                     @if($receipt_footer)
-                    <div class="text-center text-gray-500 italic pt-1 border-t border-dashed border-gray-300 dark:border-gray-600">
+                    <div class="text-center text-gray-500 italic pt-1 mt-1 border-t border-dashed border-gray-300 dark:border-gray-600">
                         {{ $receipt_footer }}
                     </div>
                     @endif

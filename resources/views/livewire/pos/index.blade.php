@@ -54,20 +54,34 @@
                 $storePhone = \App\Models\Setting::getValue('store_phone', '');
                 $storeLogo = \App\Models\Setting::getValue('store_logo', '');
                 $receiptFooter = \App\Models\Setting::getValue('receipt_footer', 'Terima kasih telah berbelanja di toko kami.');
+                $receiptHeader = \App\Models\Setting::getValue('receipt_header', '');
+                $receiptWidth = \App\Models\Setting::getValue('receipt_width', '80mm');
+                $showLogo = \App\Models\Setting::getValue('receipt_show_logo', '1') === '1';
+                $showAddress = \App\Models\Setting::getValue('receipt_show_address', '1') === '1';
+                $showPhone = \App\Models\Setting::getValue('receipt_show_phone', '1') === '1';
+                $showTax = \App\Models\Setting::getValue('receipt_show_tax', '1') === '1';
+                $showDiscount = \App\Models\Setting::getValue('receipt_show_discount', '1') === '1';
+                $showPaymentMethod = \App\Models\Setting::getValue('receipt_show_payment_method', '1') === '1';
+                $showChange = \App\Models\Setting::getValue('receipt_show_change', '1') === '1';
+                $showSku = \App\Models\Setting::getValue('receipt_show_sku', '0') === '1';
             @endphp
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
-                    <div id="receipt">
+                    <div id="receipt" style="width: {{ $receiptWidth }}; margin: 0 auto;">
                         <div class="text-center mb-3 border-b border-gray-200 dark:border-gray-700 pb-3">
-                            @if($storeLogo)
+                            @if($storeLogo && $showLogo)
                             <img src="{{ Storage::disk('public')->url('settings/' . $storeLogo) }}" class="h-12 mx-auto mb-2">
                             @endif
                             <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">{{ $storeName }}</h3>
-                            @if($storeAddress)<p class="text-xs text-gray-500 dark:text-gray-400">{{ $storeAddress }}</p>@endif
-                            @if($storePhone)<p class="text-xs text-gray-500 dark:text-gray-400">Telp: {{ $storePhone }}</p>@endif
+                            @if($storeAddress && $showAddress)<p class="text-xs text-gray-500 dark:text-gray-400">{{ $storeAddress }}</p>@endif
+                            @if($storePhone && $showPhone)<p class="text-xs text-gray-500 dark:text-gray-400">Telp: {{ $storePhone }}</p>@endif
                             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ $lastTransaction->invoice_number }}</p>
                             <p class="text-xs text-gray-400">{{ $lastTransaction->transaction_date->format('d/m/Y H:i') }}</p>
                         </div>
+
+                        @if($receiptHeader)
+                        <div class="text-center text-xs text-gray-500 italic mb-2">{{ $receiptHeader }}</div>
+                        @endif
 
                         <div class="text-center text-sm font-semibold text-emerald-600 mb-3">
                             ✓ Transaksi Berhasil
@@ -76,20 +90,25 @@
                         <div class="border-t border-gray-200 dark:border-gray-700 pt-3 space-y-2 mb-3">
                             @foreach($lastTransaction->details as $detail)
                             <div class="flex justify-between text-sm">
-                                <span class="text-gray-600 dark:text-gray-300">{{ $detail->product->name }} x{{ $detail->quantity }}</span>
+                                <span class="text-gray-600 dark:text-gray-300">
+                                    @if($showSku && $detail->product->sku)
+                                        [{{ $detail->product->sku }}]
+                                    @endif
+                                    {{ $detail->product->name }} x{{ $detail->quantity }}
+                                </span>
                                 <span class="font-medium">Rp {{ number_format($detail->sub_total, 0, ',', '.') }}</span>
                             </div>
                             @endforeach
                         </div>
 
                         <div class="border-t border-gray-200 dark:border-gray-700 pt-2 space-y-1">
-                            @if($lastTransaction->discount > 0)
+                            @if($lastTransaction->discount > 0 && $showDiscount)
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-500 dark:text-gray-400">Diskon</span>
                                 <span class="text-red-500">-Rp {{ number_format($lastTransaction->discount, 0, ',', '.') }}</span>
                             </div>
                             @endif
-                            @if($lastTransaction->tax > 0)
+                            @if($lastTransaction->tax > 0 && $showTax)
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-500 dark:text-gray-400">Pajak</span>
                                 <span>Rp {{ number_format($lastTransaction->tax, 0, ',', '.') }}</span>
@@ -103,13 +122,13 @@
                                 <span class="text-gray-500 dark:text-gray-400">Bayar</span>
                                 <span>Rp {{ number_format($lastTransaction->paid_amount, 0, ',', '.') }}</span>
                             </div>
-                            @if($lastTransaction->change_amount > 0)
+                            @if($lastTransaction->change_amount > 0 && $showChange)
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-500 dark:text-gray-400">Kembali</span>
                                 <span class="font-medium">Rp {{ number_format($lastTransaction->change_amount, 0, ',', '.') }}</span>
                             </div>
                             @endif
-                            @if($lastTransaction->payment_method)
+                            @if($lastTransaction->payment_method && $showPaymentMethod)
                             <div class="flex justify-between text-sm">
                                 <span class="text-gray-500 dark:text-gray-400">Metode</span>
                                 <span>{{ ucfirst($lastTransaction->payment_method) }}</span>
@@ -317,7 +336,7 @@
         @media print {
             body * { visibility: hidden; }
             #receipt, #receipt * { visibility: visible; }
-            #receipt { position: absolute; left: 0; top: 0; width: 80mm; padding: 10px; }
+            #receipt { position: absolute; left: 0; top: 0; padding: 10px; }
         }
     </style>
 </div>
