@@ -18,6 +18,8 @@ class CustomerList extends Component
     public $is_member = false;
     public $editId = null;
     public $showForm = false;
+    public $showDeleteModal = false;
+    public $deleteId = null;
 
     protected function rules()
     {
@@ -55,19 +57,46 @@ class CustomerList extends Component
         $data = ['name' => $this->name, 'phone' => $this->phone, 'email' => $this->email, 'address' => $this->address, 'is_member' => $this->is_member];
 
         if ($this->editId) {
-            Customer::findOrFail($this->editId)->update($data);
+            $c = Customer::findOrFail($this->editId);
+            $c->update($data);
+            activity()->performedOn($c)->log('Pelanggan diupdate: ' . $c->name);
             session()->flash('success', 'Pelanggan berhasil diupdate!');
         } else {
-            Customer::create($data);
+            $c = Customer::create($data);
+            activity()->performedOn($c)->log('Pelanggan dibuat: ' . $c->name);
             session()->flash('success', 'Pelanggan berhasil ditambahkan!');
         }
         $this->reset(['name', 'phone', 'email', 'address', 'editId', 'showForm']);
     }
 
+    public function confirmDelete($id)
+    {
+        $this->deleteId = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function delete()
+    {
+        $c = Customer::findOrFail($this->deleteId);
+
+        if ($c->transactions()->count() > 0) {
+            $this->showDeleteModal = false;
+            session()->flash('error', 'Pelanggan tidak dapat dihapus karena memiliki riwayat transaksi.');
+            return;
+        }
+
+        activity()->performedOn($c)->log('Pelanggan dihapus: ' . $c->name);
+        $c->delete();
+        $this->showDeleteModal = false;
+        $this->deleteId = null;
+        session()->flash('success', 'Pelanggan berhasil dihapus!');
+    }
+
     public function render()
     {
         return view('livewire.customer.customer-list', [
-            'customers' => Customer::where('name', 'like', '%' . $this->search . '%')
+            'customers' => Customer::withCount('transactions')
+                ->where('name', 'like', '%' . $this->search . '%')
                 ->orWhere('phone', 'like', '%' . $this->search . '%')
                 ->orderBy('name')
                 ->paginate(15),

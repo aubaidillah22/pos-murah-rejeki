@@ -18,6 +18,8 @@ class SupplierList extends Component
     public $address;
     public $editId = null;
     public $showForm = false;
+    public $showDeleteModal = false;
+    public $deleteId = null;
 
     protected function rules()
     {
@@ -54,19 +56,46 @@ class SupplierList extends Component
         $data = ['name' => $this->name, 'contact_person' => $this->contact_person, 'phone' => $this->phone, 'email' => $this->email, 'address' => $this->address];
 
         if ($this->editId) {
-            Supplier::findOrFail($this->editId)->update($data);
+            $s = Supplier::findOrFail($this->editId);
+            $s->update($data);
+            activity()->performedOn($s)->log('Supplier diupdate: ' . $s->name);
             session()->flash('success', 'Supplier berhasil diupdate!');
         } else {
-            Supplier::create($data);
+            $s = Supplier::create($data);
+            activity()->performedOn($s)->log('Supplier dibuat: ' . $s->name);
             session()->flash('success', 'Supplier berhasil ditambahkan!');
         }
         $this->reset(['name', 'contact_person', 'phone', 'email', 'address', 'editId', 'showForm']);
     }
 
+    public function confirmDelete($id)
+    {
+        $this->deleteId = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function delete()
+    {
+        $s = Supplier::findOrFail($this->deleteId);
+
+        if ($s->purchaseOrders()->count() > 0) {
+            $this->showDeleteModal = false;
+            session()->flash('error', 'Supplier tidak dapat dihapus karena memiliki riwayat purchase order.');
+            return;
+        }
+
+        activity()->performedOn($s)->log('Supplier dihapus: ' . $s->name);
+        $s->delete();
+        $this->showDeleteModal = false;
+        $this->deleteId = null;
+        session()->flash('success', 'Supplier berhasil dihapus!');
+    }
+
     public function render()
     {
         return view('livewire.supplier.supplier-list', [
-            'suppliers' => Supplier::where('name', 'like', '%' . $this->search . '%')
+            'suppliers' => Supplier::withCount('purchaseOrders')
+                ->where('name', 'like', '%' . $this->search . '%')
                 ->orWhere('phone', 'like', '%' . $this->search . '%')
                 ->orderBy('name')
                 ->paginate(15),

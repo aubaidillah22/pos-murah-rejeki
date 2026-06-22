@@ -11,6 +11,8 @@ class CategoryList extends Component
     public $description;
     public $editId = null;
     public $showForm = false;
+    public $showDeleteModal = false;
+    public $deleteId = null;
 
     protected function rules()
     {
@@ -46,10 +48,13 @@ class CategoryList extends Component
         ];
 
         if ($this->editId) {
-            Category::findOrFail($this->editId)->update($data);
+            $cat = Category::findOrFail($this->editId);
+            $cat->update($data);
+            activity()->performedOn($cat)->log('Kategori diupdate: ' . $cat->name);
             session()->flash('success', 'Kategori berhasil diupdate!');
         } else {
-            Category::create($data);
+            $cat = Category::create($data);
+            activity()->performedOn($cat)->log('Kategori dibuat: ' . $cat->name);
             session()->flash('success', 'Kategori berhasil ditambahkan!');
         }
 
@@ -60,12 +65,41 @@ class CategoryList extends Component
     {
         $cat = Category::findOrFail($id);
         $cat->update(['is_active' => !$cat->is_active]);
+        $status = $cat->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        activity()->performedOn($cat)->log("Kategori {$status}: {$cat->name}");
+
+        if (!$this->showForm && !$this->showDeleteModal) {
+            session()->flash('success', "Kategori berhasil {$status}!");
+        }
+    }
+
+    public function confirmDelete($id)
+    {
+        $this->deleteId = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function delete()
+    {
+        $cat = Category::findOrFail($this->deleteId);
+
+        if ($cat->products()->count() > 0) {
+            $this->showDeleteModal = false;
+            session()->flash('error', 'Kategori tidak dapat dihapus karena masih memiliki produk terkait.');
+            return;
+        }
+
+        activity()->performedOn($cat)->log('Kategori dihapus: ' . $cat->name);
+        $cat->delete();
+        $this->showDeleteModal = false;
+        $this->deleteId = null;
+        session()->flash('success', 'Kategori berhasil dihapus!');
     }
 
     public function render()
     {
         return view('livewire.category.category-list', [
-            'categories' => Category::orderBy('name')->get(),
+            'categories' => Category::withCount('products')->orderBy('name')->get(),
         ])->layout('layouts.app', ['title' => 'Kategori']);
     }
 }

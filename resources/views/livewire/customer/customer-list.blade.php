@@ -18,6 +18,7 @@
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telepon</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
                     <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Member</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Transaksi</th>
                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
                 </tr>
             </thead>
@@ -29,11 +30,13 @@
                     <td class="px-4 py-3 text-sm text-gray-500">{{ $c->email ?? '-' }}</td>
                     <td class="px-4 py-3 text-center">
                         <span class="text-xs {{ $c->is_member ? 'text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full' : 'text-gray-400' }}">
-                            {{ $c->is_member ? 'Member' : '- ' }}
+                            {{ $c->is_member ? 'Member' : '-' }}
                         </span>
                     </td>
+                    <td class="px-4 py-3 text-center text-sm text-gray-500">{{ $c->transactions_count }}</td>
                     <td class="px-4 py-3 text-right">
-                        <button wire:click="edit({{ $c->id }})" class="text-emerald-600 hover:text-emerald-800 text-sm">Edit</button>
+                        <button wire:click="edit({{ $c->id }})" class="text-emerald-600 hover:text-emerald-800 text-sm mr-2">Edit</button>
+                        <button wire:click="confirmDelete({{ $c->id }})" class="text-red-500 hover:text-red-700 text-sm">Hapus</button>
                     </td>
                 </tr>
                 @endforeach
@@ -42,6 +45,7 @@
         <div class="px-4 py-3 border-t border-gray-200">{{ $customers->links() }}</div>
     </div>
 
+    <!-- Form Modal -->
     @if($showForm)
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
         <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
@@ -50,6 +54,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama *</label>
                     <input type="text" wire:model="name" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" required>
+                    @error('name') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                 </div>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
@@ -74,6 +79,20 @@
                     <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">Simpan</button>
                 </div>
             </form>
+        </div>
+    </div>
+    @endif
+
+    <!-- Delete Modal -->
+    @if($showDeleteModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Hapus Pelanggan?</h3>
+            <p class="text-sm text-gray-500 mb-4">Tindakan ini tidak dapat dibatalkan.</p>
+            <div class="flex gap-2 justify-end">
+                <button wire:click="$set('showDeleteModal', false)" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Batal</button>
+                <button wire:click="delete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">Hapus</button>
+            </div>
         </div>
     </div>
     @endif
