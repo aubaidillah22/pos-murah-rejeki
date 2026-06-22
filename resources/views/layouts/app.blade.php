@@ -70,9 +70,24 @@
         /* Page transition */
         .page-enter { opacity: 0; transform: translateY(8px); }
         .page-enter-active { opacity: 1; transform: translateY(0); transition: opacity .25s ease-out, transform .25s ease-out; }
+
+        /* Dashboard card stagger animation */
+        @keyframes fade-in-up {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in-up 0.4s ease-out both;
+        }
     </style>
     <script>
+        function applyDarkMode() {
+            const isDark = localStorage.getItem('darkMode') === 'true' ||
+                (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', isDark);
+        }
         document.addEventListener('livewire:navigated', () => {
+            applyDarkMode();
             const el = document.getElementById('page-content');
             if (!el) return;
             el.classList.remove('page-enter-active');
@@ -80,6 +95,7 @@
             el.classList.add('page-enter-active');
         });
         document.addEventListener('DOMContentLoaded', () => {
+            applyDarkMode();
             const el = document.getElementById('page-content');
             if (!el) return;
             el.classList.remove('page-enter-active');

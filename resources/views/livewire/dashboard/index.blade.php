@@ -2,7 +2,7 @@
     <!-- Stats Cards -->
     <div class="card p-5">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div class="p-3">
+            <div class="p-3 animate-fade-in" style="animation-delay: 0s">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Penjualan Hari Ini</p>
@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="p-3 animate-fade-in" style="animation-delay: 0.1s">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Transaksi Hari Ini</p>
@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="p-3 animate-fade-in" style="animation-delay: 0.2s">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Laba Kotor Hari Ini</p>
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="p-3 animate-fade-in" style="animation-delay: 0.3s">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Produk</p>
@@ -58,7 +58,7 @@
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="p-3 animate-fade-in" style="animation-delay: 0.4s">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Pelanggan</p>
@@ -76,7 +76,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Chart Penjualan Bulanan -->
-        <div class="lg:col-span-2 card p-5">
+        <div class="lg:col-span-2 card p-5 animate-fade-in" style="animation-delay: 0.5s">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100"><span class="text-emerald-600">Grafik</span> Penjualan Bulanan</h3>
                 <select wire:model.live="selectedYear" 
@@ -90,7 +90,7 @@
         </div>
 
         <!-- Pie Chart Metode Pembayaran -->
-        <div class="card p-5">
+        <div class="card p-5 animate-fade-in" style="animation-delay: 0.6s">
             <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4"><span class="text-blue-600">Metode</span> Pembayaran Hari Ini</h3>
             @if(count($paymentMethodData) > 0)
             <div id="paymentChart" style="min-height: 250px;"></div>
@@ -119,7 +119,7 @@
     <!-- Row 2: Top Products + Recent Transactions + Top Cashier -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Produk Terlaris -->
-        <div class="card p-5">
+        <div class="card p-5 animate-fade-in" style="animation-delay: 0.7s">
             <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
                 <span class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
                     <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
@@ -149,7 +149,7 @@
         </div>
 
         <!-- Transaksi Terbaru -->
-        <div class="card p-5">
+        <div class="card p-5 animate-fade-in" style="animation-delay: 0.8s">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     <span class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
@@ -184,7 +184,7 @@
         </div>
 
         <!-- Top Kasir -->
-        <div class="card p-5">
+        <div class="card p-5 animate-fade-in" style="animation-delay: 0.9s">
             <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
                 <span class="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
                     <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +215,7 @@
     </div>
 
     <!-- Notifikasi Stok Menipis -->
-    <div class="card p-5">
+    <div class="card p-5 animate-fade-in" style="animation-delay: 1s">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                 <span class="w-7 h-7 rounded-lg bg-red-100 dark:bg-red-900/50 flex items-center justify-center">
@@ -262,19 +262,40 @@
                 data: monthlySales
             }],
             chart: {
-                type: 'area',
+                type: 'line',
                 height: 300,
                 toolbar: { show: false },
                 foreColor: '#6b7280',
                 zoom: { enabled: false },
-                animations: { enabled: true, dynamicAnimation: { speed: 500 } }
+                animations: {
+                    enabled: true,
+                    easing: 'easeinout',
+                    speed: 1000,
+                    dynamicAnimation: { speed: 500 }
+                },
+                dropShadow: {
+                    enabled: true,
+                    top: 3,
+                    left: 0,
+                    blur: 8,
+                    color: '#059669',
+                    opacity: 0.2
+                }
             },
             colors: ['#059669'],
             dataLabels: { enabled: false },
-            stroke: { curve: 'smooth', width: 2 },
-            markers: { size: 4, colors: ['#059669'], strokeColors: '#fff', strokeWidth: 2 },
+            stroke: { curve: 'smooth', width: 3 },
+            markers: {
+                size: 5,
+                colors: ['#fff'],
+                strokeColors: '#059669',
+                strokeWidth: 3,
+                hover: { size: 7 }
+            },
             xaxis: {
                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                axisBorder: { show: false },
+                axisTicks: { show: false },
             },
             yaxis: {
                 labels: {
@@ -286,9 +307,22 @@
             },
             fill: {
                 type: 'gradient',
-                gradient: { shadeIntensity: 1, opacityFrom: 0.5, opacityTo: 0.1 }
+                gradient: {
+                    shade: 'light',
+                    type: 'vertical',
+                    shadeIntensity: 0.3,
+                    gradientToColors: ['#34d399'],
+                    inverseColors: false,
+                    opacityFrom: 0.45,
+                    opacityTo: 0.05,
+                    stops: [0, 100]
+                }
             },
-            grid: { borderColor: '#f1f5f9', strokeDashArray: 4 }
+            grid: {
+                borderColor: '#f1f5f9',
+                strokeDashArray: 4,
+                xaxis: { lines: { show: false } }
+            }
         };
         return new ApexCharts(document.querySelector("#salesChart"), options);
     }
