@@ -10,6 +10,8 @@ class UnitList extends Component
     public $name;
     public $editId = null;
     public $showForm = false;
+    public $showDeleteModal = false;
+    public $deleteId;
 
     protected function rules()
     {
@@ -43,9 +45,17 @@ class UnitList extends Component
         $this->reset(['name', 'editId', 'showForm']);
     }
 
-    public function delete($id)
+    public function confirmDelete($id)
     {
-        Unit::findOrFail($id)->delete();
+        $this->deleteId = $id;
+        $this->showDeleteModal = true;
+    }
+
+    public function delete()
+    {
+        Unit::findOrFail($this->deleteId)->delete();
+        $this->showDeleteModal = false;
+        $this->deleteId = null;
         session()->flash('success', 'Satuan berhasil dihapus!');
     }
 
