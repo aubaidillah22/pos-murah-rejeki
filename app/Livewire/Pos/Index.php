@@ -29,6 +29,8 @@ class Index extends Component
     public $showReceiptModal = false;
     public $lastTransaction = null;
 
+
+
     protected function rules()
     {
         return [

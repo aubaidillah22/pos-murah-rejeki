@@ -104,15 +104,15 @@ class Index extends Component
         // Grafik penjualan bulanan (per year yang dipilih, exclude voided)
         $year = $this->selectedYear;
         $monthlyData = Transaction::select(
-                DB::raw('MONTH(transaction_date) as month'),
+                DB::raw("CAST(strftime('%m', transaction_date) AS INTEGER) as month"),
                 DB::raw('SUM(grand_total) as total')
             )
             ->whereYear('transaction_date', $year)
             ->where('payment_status', 'paid')
             ->whereNull('voided_at')
             ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
-            ->groupBy(DB::raw('MONTH(transaction_date)'))
-            ->orderBy(DB::raw('MONTH(transaction_date)'))
+            ->groupBy(DB::raw("CAST(strftime('%m', transaction_date) AS INTEGER)"))
+            ->orderBy(DB::raw("CAST(strftime('%m', transaction_date) AS INTEGER)"))
             ->pluck('total', 'month')
             ->toArray();
 

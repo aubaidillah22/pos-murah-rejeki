@@ -48,47 +48,83 @@
 
             <!-- Receipt Modal -->
             @if($showReceiptModal && $lastTransaction)
+            @php
+                $storeName = \App\Models\Setting::getValue('store_name', config('app.name'));
+                $storeAddress = \App\Models\Setting::getValue('store_address', '');
+                $storePhone = \App\Models\Setting::getValue('store_phone', '');
+                $storeLogo = \App\Models\Setting::getValue('store_logo', '');
+                $receiptFooter = \App\Models\Setting::getValue('receipt_footer', 'Terima kasih telah berbelanja di toko kami.');
+            @endphp
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                 <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
-                    <div class="text-center mb-4">
-                        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
+                    <div id="receipt">
+                        <div class="text-center mb-3 border-b border-gray-200 pb-3">
+                            @if($storeLogo)
+                            <img src="{{ Storage::url('settings/' . $storeLogo) }}" class="h-12 mx-auto mb-2">
+                            @endif
+                            <h3 class="text-lg font-bold text-gray-800">{{ $storeName }}</h3>
+                            @if($storeAddress)<p class="text-xs text-gray-500">{{ $storeAddress }}</p>@endif
+                            @if($storePhone)<p class="text-xs text-gray-500">Telp: {{ $storePhone }}</p>@endif
+                            <p class="text-sm text-gray-500 mt-1">{{ $lastTransaction->invoice_number }}</p>
+                            <p class="text-xs text-gray-400">{{ $lastTransaction->transaction_date->format('d/m/Y H:i') }}</p>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-800">Transaksi Berhasil!</h3>
-                        <p class="text-sm text-gray-500">{{ $lastTransaction->invoice_number }}</p>
-                    </div>
 
-                    <div class="border-t border-gray-200 pt-4 space-y-2">
-                        @foreach($lastTransaction->details as $detail)
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-600">{{ $detail->product->name }} x{{ $detail->quantity }}</span>
-                            <span class="font-medium">Rp {{ number_format($detail->sub_total, 0, ',', '.') }}</span>
+                        <div class="text-center text-sm font-semibold text-emerald-600 mb-3">
+                            ✓ Transaksi Berhasil
                         </div>
-                        @endforeach
-                    </div>
 
-                    <div class="border-t border-gray-200 pt-3 space-y-1">
-                        @if($lastTransaction->discount > 0)
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500">Diskon</span>
-                            <span class="text-red-500">-Rp {{ number_format($lastTransaction->discount, 0, ',', '.') }}</span>
+                        <div class="border-t border-gray-200 pt-3 space-y-2 mb-3">
+                            @foreach($lastTransaction->details as $detail)
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">{{ $detail->product->name }} x{{ $detail->quantity }}</span>
+                                <span class="font-medium">Rp {{ number_format($detail->sub_total, 0, ',', '.') }}</span>
+                            </div>
+                            @endforeach
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-2 space-y-1">
+                            @if($lastTransaction->discount > 0)
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">Diskon</span>
+                                <span class="text-red-500">-Rp {{ number_format($lastTransaction->discount, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
+                            @if($lastTransaction->tax > 0)
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">Pajak</span>
+                                <span>Rp {{ number_format($lastTransaction->tax, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
+                            <div class="flex justify-between text-base font-bold border-t border-gray-200 pt-1">
+                                <span>Total</span>
+                                <span class="text-emerald-600">Rp {{ number_format($lastTransaction->grand_total, 0, ',', '.') }}</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">Bayar</span>
+                                <span>Rp {{ number_format($lastTransaction->paid_amount, 0, ',', '.') }}</span>
+                            </div>
+                            @if($lastTransaction->change_amount > 0)
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">Kembali</span>
+                                <span class="font-medium">Rp {{ number_format($lastTransaction->change_amount, 0, ',', '.') }}</span>
+                            </div>
+                            @endif
+                            @if($lastTransaction->payment_method)
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-500">Metode</span>
+                                <span>{{ ucfirst($lastTransaction->payment_method) }}</span>
+                            </div>
+                            @endif
+                        </div>
+
+                        @if($receiptFooter)
+                        <div class="text-center text-xs text-gray-400 italic mt-4 pt-3 border-t border-dashed border-gray-200">
+                            {{ $receiptFooter }}
                         </div>
                         @endif
-                        @if($lastTransaction->tax > 0)
-                        <div class="flex justify-between text-sm">
-                            <span class="text-gray-500">Pajak</span>
-                            <span>Rp {{ number_format($lastTransaction->tax, 0, ',', '.') }}</span>
-                        </div>
-                        @endif
-                        <div class="flex justify-between text-base font-bold">
-                            <span>Total</span>
-                            <span class="text-emerald-600">Rp {{ number_format($lastTransaction->grand_total, 0, ',', '.') }}</span>
-                        </div>
                     </div>
 
-                    <div class="flex gap-2 mt-6">
+                    <div class="flex gap-2 mt-4">
                         <button onclick="window.print()" class="flex-1 px-4 py-2.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium">
                             🖨️ Cetak Struk
                         </button>
