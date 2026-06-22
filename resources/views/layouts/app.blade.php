@@ -56,9 +56,40 @@
 
         /* Number styling */
         .tabular-nums { font-variant-numeric: tabular-nums; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+        .dark ::-webkit-scrollbar-thumb { background: #374151; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+        * { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
+        .dark * { scrollbar-color: #374151 transparent; }
+
+        /* Page transition */
+        .page-enter { opacity: 0; transform: translateY(8px); }
+        .page-enter-active { opacity: 1; transform: translateY(0); transition: opacity .25s ease-out, transform .25s ease-out; }
+
+        @keyframes loading-bar { 0% { left: -30%; } 50% { left: 50%; } 100% { left: 130%; } }
+        .loading-bar { animation: loading-bar 1.2s ease-in-out infinite; }
     </style>
+    <script>
+        document.addEventListener('livewire:navigated', () => {
+            document.getElementById('loading-bar')?.classList.add('hidden');
+            document.getElementById('page-content')?.classList.add('page-enter-active');
+        });
+        document.addEventListener('livewire:navigating', () => {
+            document.getElementById('loading-bar')?.classList.remove('hidden');
+        });
+    </script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-sans antialiased">
+    <!-- Loading bar -->
+    <div id="loading-bar" class="hidden fixed top-0 left-0 z-[100] w-full h-0.5 bg-emerald-500">
+        <div class="loading-bar absolute inset-0 bg-emerald-300"></div>
+    </div>
+
     <div x-data="{ sidebarOpen: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true', dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" class="min-h-screen">
         <!-- Mobile overlay -->
         <div x-show="sidebarOpen" x-cloak 
@@ -234,7 +265,7 @@
             </header>
 
             <!-- Page content -->
-            <main class="p-4 md:p-6">
+            <main id="page-content" class="p-4 md:p-6 page-enter page-enter-active">
                 <div class="max-w-7xl mx-auto">
                     @if(session('success'))
                     <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
