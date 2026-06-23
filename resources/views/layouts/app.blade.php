@@ -9,12 +9,88 @@
     @livewireStyles
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script>
+        var savedTheme = localStorage.getItem('themeColor') || 'green';
+        document.documentElement.classList.add('theme-' + savedTheme);
         if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
     </script>
     <style>
         [x-cloak] { display: none !important; }
+
+        /* Theme colors */
+        :root, .theme-green {
+            --color-emerald-50: 236 253 245;
+            --color-emerald-100: 209 250 229;
+            --color-emerald-200: 167 243 208;
+            --color-emerald-300: 110 231 183;
+            --color-emerald-400: 52 211 153;
+            --color-emerald-500: 16 185 129;
+            --color-emerald-600: 5 150 105;
+            --color-emerald-700: 4 120 87;
+            --color-emerald-800: 6 95 70;
+            --color-emerald-900: 6 78 59;
+        }
+        .theme-red {
+            --color-emerald-50: 254 242 242;
+            --color-emerald-100: 254 226 226;
+            --color-emerald-200: 254 202 202;
+            --color-emerald-300: 252 165 165;
+            --color-emerald-400: 248 113 113;
+            --color-emerald-500: 239 68 68;
+            --color-emerald-600: 220 38 38;
+            --color-emerald-700: 185 28 28;
+            --color-emerald-800: 153 27 27;
+            --color-emerald-900: 127 29 29;
+        }
+        .theme-blue {
+            --color-emerald-50: 239 246 255;
+            --color-emerald-100: 219 234 254;
+            --color-emerald-200: 191 219 254;
+            --color-emerald-300: 147 197 253;
+            --color-emerald-400: 96 165 250;
+            --color-emerald-500: 59 130 246;
+            --color-emerald-600: 37 99 235;
+            --color-emerald-700: 29 78 216;
+            --color-emerald-800: 30 64 175;
+            --color-emerald-900: 30 58 138;
+        }
+        .theme-purple {
+            --color-emerald-50: 245 243 255;
+            --color-emerald-100: 237 233 254;
+            --color-emerald-200: 221 214 254;
+            --color-emerald-300: 196 181 253;
+            --color-emerald-400: 167 139 250;
+            --color-emerald-500: 139 92 246;
+            --color-emerald-600: 124 58 237;
+            --color-emerald-700: 109 40 217;
+            --color-emerald-800: 91 33 182;
+            --color-emerald-900: 76 29 149;
+        }
+        .theme-orange {
+            --color-emerald-50: 255 247 237;
+            --color-emerald-100: 255 237 213;
+            --color-emerald-200: 254 215 170;
+            --color-emerald-300: 253 186 116;
+            --color-emerald-400: 251 146 60;
+            --color-emerald-500: 249 115 22;
+            --color-emerald-600: 234 88 12;
+            --color-emerald-700: 194 65 12;
+            --color-emerald-800: 154 52 18;
+            --color-emerald-900: 124 45 18;
+        }
+        .theme-pink {
+            --color-emerald-50: 255 241 242;
+            --color-emerald-100: 255 228 230;
+            --color-emerald-200: 254 205 211;
+            --color-emerald-300: 253 164 175;
+            --color-emerald-400: 251 113 133;
+            --color-emerald-500: 244 63 94;
+            --color-emerald-600: 225 29 72;
+            --color-emerald-700: 190 18 60;
+            --color-emerald-800: 159 18 57;
+            --color-emerald-900: 136 19 55;
+        }
 
         /* Card utilities */
         .card { @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700; }
@@ -62,15 +138,20 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+        ::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-emerald-500)); }
         .dark ::-webkit-scrollbar-thumb { background: #374151; }
-        .dark ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: rgb(var(--color-emerald-500)); }
         * { scrollbar-width: thin; scrollbar-color: #d1d5db transparent; }
         .dark * { scrollbar-color: #374151 transparent; }
 
         /* Page transition */
         .page-enter { opacity: 0; }
         .page-enter-active { opacity: 1; transition: opacity .25s ease-out; }
+
+        /* Skeleton shimmer */
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        .skeleton { background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%); background-size: 200% 100%; animation: shimmer 1.5s ease-in-out infinite; }
+        .dark .skeleton { background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%); background-size: 200% 100%; }
 
         /* Dashboard card stagger animation */
         @keyframes fade-in-up {
@@ -100,6 +181,11 @@
             var bar = document.getElementById('loading-bar');
             if (bar) bar.style.display = 'none';
         }
+        function applyTheme() {
+            var theme = localStorage.getItem('themeColor') || 'green';
+            document.documentElement.classList.remove('theme-green', 'theme-red', 'theme-blue', 'theme-purple', 'theme-orange', 'theme-pink');
+            document.documentElement.classList.add('theme-' + theme);
+        }
         function applyDarkMode() {
             const isDark = localStorage.getItem('darkMode') === 'true' ||
                 (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -115,18 +201,20 @@
         document.addEventListener('livewire:navigating', showLoadingBar);
         document.addEventListener('livewire:navigated', function() {
             hideLoadingBar();
+            applyTheme();
             applyDarkMode();
             animatePageIn();
         });
         document.addEventListener('DOMContentLoaded', function() {
             hideLoadingBar();
+            applyTheme();
             applyDarkMode();
             animatePageIn();
         });
     </script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-sans antialiased">
-    <div x-data="{ sidebarOpen: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true', dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" class="min-h-screen">
+    <div x-data="{ sidebarOpen: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true', dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches), theme: localStorage.getItem('themeColor') || 'green', loading: false }" x-init="window.addEventListener('livewire:navigating', () => loading = true); window.addEventListener('livewire:navigated', () => { setTimeout(() => loading = false, 150) })" class="min-h-screen">
         <!-- Mobile overlay -->
         <div x-show="sidebarOpen" x-cloak
              class="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -164,11 +252,11 @@
                         ['name' => 'Kategori', 'route' => 'categories', 'icon' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'],
                         ['name' => 'Pelanggan', 'route' => 'customers', 'icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'],
                         ['name' => 'Supplier', 'route' => 'suppliers', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'],
-                        ['name' => 'Pembelian', 'route' => 'purchases', 'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'],
-                        ['name' => 'Stok Opname', 'route' => 'stock-opname', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'],
+                        ['name' => 'Pembelian', 'route' => 'purchases', 'icon' => 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z', 'dev' => true],
+                        ['name' => 'Stok Opname', 'route' => 'stock-opname', 'icon' => 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z', 'dev' => true],
                         ['name' => 'Transaksi', 'route' => 'transactions', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01'],
                         ['name' => 'Laporan', 'route' => 'reports', 'icon' => 'M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
-                        ['name' => 'Pengeluaran', 'route' => 'expenses', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
+                        ['name' => 'Pengeluaran', 'route' => 'expenses', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'dev' => true],
                     ];
 
                     if(auth()->user()->hasRole('Admin')) {
@@ -193,6 +281,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/>
                     </svg>
                     <span>{{ $item['name'] }}</span>
+                    @if(!empty($item['dev']))
+                        <span class="ml-auto text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 dark:text-amber-400">Dev</span>
+                    @endif
                 </a>
                 @endforeach
             </nav>
@@ -230,11 +321,26 @@
                         </button>
                         <div class="ml-1.5">
                             <h2 class="text-sm md:text-base font-semibold text-gray-800 dark:text-gray-100 leading-tight">@yield('page-title', $title ?? 'Dashboard')</h2>
-                            <time x-show="!scrolled" x-cloak x-transition:enter.opacity.duration.200ms class="text-[11px] text-gray-400 dark:text-gray-500 hidden md:block">{{ now()->translatedFormat('l, d F Y') }}</time>
+                            <div class="flex items-center gap-1.5 hidden md:flex">
+                                <span x-data="{ time: '' }" x-init="function(){ time = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit', second:'2-digit', hour12: false}); setInterval(() => time = new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit', second:'2-digit', hour12: false}), 1000) }" x-show="!scrolled" x-cloak x-transition:enter.opacity.duration.200ms x-text="time" class="text-[11px] text-gray-400 dark:text-gray-500 tabular-nums"></span>
+                                <time x-show="!scrolled" x-cloak x-transition:enter.opacity.duration.200ms class="text-[11px] text-gray-400 dark:text-gray-500">{{ now()->translatedFormat('l, d F Y') }}</time>
+                            </div>
                         </div>
                     </div>
 
                     <div class="flex items-center gap-1">
+                        <button @@click="
+                            theme = ({green: 'red', red: 'blue', blue: 'purple', purple: 'orange', orange: 'pink', pink: 'green'})[theme];
+                            localStorage.setItem('themeColor', theme);
+                            document.documentElement.classList.remove('theme-green', 'theme-red', 'theme-blue', 'theme-purple', 'theme-orange', 'theme-pink');
+                            document.documentElement.classList.add('theme-' + theme)
+                        "
+                                class="p-1.5 md:p-2 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                :title="'Tema: ' + ({green: 'Hijau', red: 'Merah', blue: 'Biru', purple: 'Ungu', orange: 'Oranye', pink: 'Pink'})[theme]">
+                            <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                            </svg>
+                        </button>
                         <button @@click="dark = !dark; localStorage.setItem('darkMode', dark); document.documentElement.classList.toggle('dark')"
                                 class="p-1.5 md:p-2 rounded-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                 :title="dark ? 'Mode Terang' : 'Mode Gelap'">
@@ -302,7 +408,46 @@
 
             <!-- Page content -->
             <main id="page-content" class="p-4 md:p-6 page-enter">
-                <div class="max-w-7xl mx-auto">
+                <div x-show="loading" x-cloak class="space-y-4">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="skeleton h-6 w-48 rounded-lg"></div>
+                        <div class="skeleton h-9 w-32 rounded-lg"></div>
+                    </div>
+                    <div class="card p-5 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="skeleton h-4 w-24 rounded"></div>
+                            <div class="skeleton h-4 w-32 rounded"></div>
+                            <div class="skeleton h-4 w-20 rounded ml-auto"></div>
+                        </div>
+                        <div class="border-t border-gray-100 dark:border-gray-700 pt-4 space-y-3">
+                            <div class="flex items-center gap-4">
+                                <div class="skeleton h-3 w-16 rounded"></div>
+                                <div class="skeleton h-3 w-40 rounded"></div>
+                                <div class="skeleton h-3 w-24 rounded"></div>
+                                <div class="skeleton h-3 w-20 rounded ml-auto"></div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="skeleton h-3 w-16 rounded"></div>
+                                <div class="skeleton h-3 w-32 rounded"></div>
+                                <div class="skeleton h-3 w-24 rounded"></div>
+                                <div class="skeleton h-3 w-20 rounded ml-auto"></div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="skeleton h-3 w-16 rounded"></div>
+                                <div class="skeleton h-3 w-36 rounded"></div>
+                                <div class="skeleton h-3 w-24 rounded"></div>
+                                <div class="skeleton h-3 w-20 rounded ml-auto"></div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="skeleton h-3 w-16 rounded"></div>
+                                <div class="skeleton h-3 w-28 rounded"></div>
+                                <div class="skeleton h-3 w-24 rounded"></div>
+                                <div class="skeleton h-3 w-20 rounded ml-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div x-show="!loading" class="max-w-7xl mx-auto">
                     @if(session('success'))
                     <div class="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 px-4 py-3 rounded-lg mb-4 flex items-center justify-between">
                         <span>{{ session('success') }}</span>
