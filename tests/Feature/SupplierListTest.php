@@ -147,6 +147,17 @@ class SupplierListTest extends TestCase
     }
 
     /** @test */
+    public function can_export_excel()
+    {
+        Supplier::factory()->count(3)->create();
+
+        Livewire::actingAs($this->admin)
+            ->test(SupplierList::class)
+            ->call('exportExcel')
+            ->assertFileDownloaded();
+    }
+
+    /** @test */
     public function guest_cannot_access_supplier_list()
     {
         $response = $this->get('/suppliers');

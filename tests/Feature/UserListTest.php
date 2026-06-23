@@ -158,6 +158,21 @@ class UserListTest extends TestCase
     }
 
     /** @test */
+    public function can_export_excel()
+    {
+        $user = User::factory()->create([
+            'outlet_id' => $this->outlet->id,
+            'is_active' => true,
+        ]);
+        $user->assignRole('Kasir');
+
+        Livewire::actingAs($this->admin)
+            ->test(UserList::class)
+            ->call('exportExcel')
+            ->assertFileDownloaded();
+    }
+
+    /** @test */
     public function guest_cannot_access_user_list()
     {
         $response = $this->get('/users');

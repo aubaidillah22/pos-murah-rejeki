@@ -149,6 +149,17 @@ class CustomerListTest extends TestCase
     }
 
     /** @test */
+    public function can_export_excel()
+    {
+        Customer::factory()->count(3)->create();
+
+        Livewire::actingAs($this->admin)
+            ->test(CustomerList::class)
+            ->call('exportExcel')
+            ->assertFileDownloaded();
+    }
+
+    /** @test */
     public function guest_cannot_access_customer_list()
     {
         $response = $this->get('/customers');

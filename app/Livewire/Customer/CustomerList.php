@@ -99,6 +99,26 @@ class CustomerList extends Component
         session()->flash('success', 'Pelanggan berhasil dihapus!');
     }
 
+    public function exportExcel()
+    {
+        $customers = Customer::withCount('transactions')
+            ->orderBy('name')
+            ->get();
+
+        $exportData = $customers->map(function ($c) {
+            return [
+                'Nama' => $c->name,
+                'Telepon' => $c->phone ?? '',
+                'Email' => $c->email ?? '',
+                'Alamat' => $c->address ?? '',
+                'Member' => $c->is_member ? 'Ya' : 'Tidak',
+                'Jumlah Transaksi' => $c->transactions_count,
+            ];
+        });
+
+        return (new FastExcel($exportData))->download('pelanggan-' . now()->format('Ymd-His') . '.xlsx');
+    }
+
     public function render()
     {
         return view('livewire.customer.customer-list', [

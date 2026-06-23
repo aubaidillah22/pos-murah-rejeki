@@ -5,6 +5,7 @@ namespace App\Livewire\Supplier;
 use App\Models\Supplier;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class SupplierList extends Component
 {
@@ -95,6 +96,26 @@ class SupplierList extends Component
         $this->showDeleteModal = false;
         $this->deleteId = null;
         session()->flash('success', 'Supplier berhasil dihapus!');
+    }
+
+    public function exportExcel()
+    {
+        $suppliers = Supplier::withCount('purchaseOrders')
+            ->orderBy('name')
+            ->get();
+
+        $exportData = $suppliers->map(function ($s) {
+            return [
+                'Nama Perusahaan' => $s->name,
+                'Kontak Person' => $s->contact_person ?? '',
+                'Telepon' => $s->phone ?? '',
+                'Email' => $s->email ?? '',
+                'Alamat' => $s->address ?? '',
+                'Jumlah PO' => $s->purchase_orders_count,
+            ];
+        });
+
+        return (new FastExcel($exportData))->download('supplier-' . now()->format('Ymd-His') . '.xlsx');
     }
 
     public function render()

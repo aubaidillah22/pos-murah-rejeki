@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Outlet;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Rap2hpoutre\FastExcel\FastExcel;
 use Spatie\Permission\Models\Role;
 
 class UserList extends Component
@@ -150,6 +151,25 @@ class UserList extends Component
     {
         $this->reset(['editId', 'name', 'email', 'password', 'selected_outlet_id', 'selected_role']);
         $this->is_active = true;
+    }
+
+    public function exportExcel()
+    {
+        $users = User::with(['outlet', 'roles'])
+            ->orderBy('name')
+            ->get();
+
+        $exportData = $users->map(function ($u) {
+            return [
+                'Nama' => $u->name,
+                'Email' => $u->email,
+                'Outlet' => $u->outlet?->name ?? '',
+                'Role' => $u->roles->pluck('name')->implode(', '),
+                'Status' => $u->is_active ? 'Aktif' : 'Nonaktif',
+            ];
+        });
+
+        return (new FastExcel($exportData))->download('pengguna-' . now()->format('Ymd-His') . '.xlsx');
     }
 
     public function render()
