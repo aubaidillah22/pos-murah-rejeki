@@ -1,6 +1,6 @@
 <div>
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div class="flex-1 flex flex-wrap items-center gap-2">
             <div class="relative">
                 <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari invoice, pelanggan, kasir..."
