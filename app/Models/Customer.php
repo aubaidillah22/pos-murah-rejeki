@@ -16,12 +16,14 @@ class Customer extends Model
         'email',
         'address',
         'is_member',
+        'discount_percent',
     ];
 
     protected function casts(): array
     {
         return [
             'is_member' => 'boolean',
+            'discount_percent' => 'decimal:2',
         ];
     }
 

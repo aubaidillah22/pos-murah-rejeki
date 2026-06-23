@@ -157,6 +157,19 @@ class CategoryListTest extends TestCase
     }
 
     /** @test */
+    public function can_search_categories()
+    {
+        Category::factory()->create(['name' => 'Material Bangunan', 'outlet_id' => $this->outlet->id]);
+        Category::factory()->create(['name' => 'Alat Tulis', 'outlet_id' => $this->outlet->id]);
+
+        Livewire::actingAs($this->admin)
+            ->test(CategoryList::class)
+            ->set('search', 'Material')
+            ->assertSee('Material Bangunan')
+            ->assertDontSee('Alat Tulis');
+    }
+
+    /** @test */
     public function can_export_excel()
     {
         Category::factory()->count(3)->create([

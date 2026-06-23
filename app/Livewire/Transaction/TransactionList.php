@@ -3,21 +3,16 @@
 namespace App\Livewire\Transaction;
 
 use App\Models\Customer;
-use App\Models\Outlet;
 use App\Models\Transaction;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class TransactionList extends Component
 {
     use WithPagination;
 
     public $search = '';
-    public $dateFrom = '';
-    public $dateTo = '';
-    public $paymentMethod = '';
-    public $paymentStatus = '';
-    public $filter_outlet_id = '';
     public $showDetail = null;
     public $showVoidModal = false;
     public $voidId = null;
@@ -28,31 +23,6 @@ class TransactionList extends Component
     public $editCustomerId = null;
 
     public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingDateFrom()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingDateTo()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingPaymentMethod()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingPaymentStatus()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingFilterOutletId()
     {
         $this->resetPage();
     }
@@ -140,31 +110,76 @@ class TransactionList extends Component
         }
     }
 
+    public function exportExcel()
+    {
+        $query = Transaction::with(['customer', 'user', 'outlet'])
+            ->notVoided()
+            ->when($this->search, function ($q) {
+                $q->where(function ($sq) {
+                    $sq->where('invoice_number', 'like', '%' . $this->search . '%')
+                      ->orWhere('transaction_date', 'like', '%' . $this->search . '%')
+                      ->orWhere('total_amount', 'like', '%' . $this->search . '%')
+                      ->orWhere('discount', 'like', '%' . $this->search . '%')
+                      ->orWhere('grand_total', 'like', '%' . $this->search . '%')
+                      ->orWhere('paid_amount', 'like', '%' . $this->search . '%')
+                      ->orWhere('change_amount', 'like', '%' . $this->search . '%')
+                      ->orWhere('notes', 'like', '%' . $this->search . '%')
+                      ->orWhere('payment_method', 'like', '%' . $this->search . '%')
+                      ->orWhere('payment_status', 'like', '%' . $this->search . '%')
+                      ->orWhereHas('customer', fn($cq) => $cq->where('name', 'like', '%' . $this->search . '%'))
+                      ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', '%' . $this->search . '%'));
+                });
+            })
+            ->when(auth()->user()->outlet_id, fn($q) => $q->where('outlet_id', auth()->user()->outlet_id))
+            ->orderBy('id', 'desc')
+            ->get();
+
+        $exportData = $query->map(function ($t) {
+            return [
+                'Invoice' => $t->invoice_number,
+                'Tanggal' => $t->transaction_date->format('d/m/Y H:i'),
+                'Outlet' => $t->outlet?->name ?? '-',
+                'Pelanggan' => $t->customer?->name ?? 'Umum',
+                'Kasir' => $t->user?->name,
+                'Total' => $t->total_amount,
+                'Diskon' => $t->discount,
+                'Grand Total' => $t->grand_total,
+                'Dibayar' => $t->paid_amount,
+                'Kembalian' => $t->change_amount,
+                'Metode Bayar' => $t->payment_method === 'cash' ? 'Tunai' : ($t->payment_method === 'qris' ? 'QRIS' : ucfirst($t->payment_method)),
+                'Status' => $t->payment_status === 'paid' ? 'Lunas' : 'Piutang',
+                'Catatan' => $t->notes ?? '',
+            ];
+        });
+
+        return (new FastExcel($exportData))->download('transaksi-' . now()->format('Ymd-His') . '.xlsx');
+    }
+
     public function render()
     {
-        $outlets = auth()->user()->hasRole('Admin') ? Outlet::where('is_active', true)->get() : collect();
-
         $query = Transaction::with(['customer', 'user'])
             ->notVoided()
             ->when($this->search, function ($q) {
                 $q->where(function ($sq) {
                     $sq->where('invoice_number', 'like', '%' . $this->search . '%')
+                      ->orWhere('transaction_date', 'like', '%' . $this->search . '%')
+                      ->orWhere('total_amount', 'like', '%' . $this->search . '%')
+                      ->orWhere('discount', 'like', '%' . $this->search . '%')
+                      ->orWhere('grand_total', 'like', '%' . $this->search . '%')
+                      ->orWhere('paid_amount', 'like', '%' . $this->search . '%')
+                      ->orWhere('change_amount', 'like', '%' . $this->search . '%')
                       ->orWhere('notes', 'like', '%' . $this->search . '%')
+                      ->orWhere('payment_method', 'like', '%' . $this->search . '%')
+                      ->orWhere('payment_status', 'like', '%' . $this->search . '%')
                       ->orWhereHas('customer', fn($cq) => $cq->where('name', 'like', '%' . $this->search . '%'))
                       ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', '%' . $this->search . '%'));
                 });
             })
-            ->when($this->dateFrom, fn($q) => $q->whereDate('transaction_date', '>=', $this->dateFrom))
-            ->when($this->dateTo, fn($q) => $q->whereDate('transaction_date', '<=', $this->dateTo))
-            ->when($this->paymentMethod, fn($q) => $q->where('payment_method', $this->paymentMethod))
-            ->when($this->paymentStatus, fn($q) => $q->where('payment_status', $this->paymentStatus))
             ->when(auth()->user()->outlet_id, fn($q) => $q->where('outlet_id', auth()->user()->outlet_id))
-            ->when(auth()->user()->hasRole('Admin') && $this->filter_outlet_id, fn($q) => $q->where('outlet_id', $this->filter_outlet_id))
             ->orderBy('id', 'desc');
 
         return view('livewire.transaction.transaction-list', [
             'transactions' => $query->paginate(15),
-            'outlets' => $outlets,
             'customers' => Customer::orderBy('name')->get(),
         ])->layout('layouts.app', ['title' => 'Transaksi']);
     }

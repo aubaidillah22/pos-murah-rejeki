@@ -29,7 +29,10 @@ class Index extends Component
     public $showReceiptModal = false;
     public $lastTransaction = null;
 
-
+    // Member pricing
+    public $isMemberCustomer = false;
+    public $memberDiscountPercent = 0;
+    public $totalSavings = 0;
 
     protected function rules()
     {
@@ -102,6 +105,9 @@ class Index extends Component
             return;
         }
 
+        $isMember = $this->customer_id && $this->isMemberCustomer;
+        $effectivePrice = $this->getEffectivePrice($product, $isMember);
+
         $existingKey = null;
         foreach ($this->cart as $key => $item) {
             if ($item['product_id'] == $productId) {
@@ -119,21 +125,78 @@ class Index extends Component
                 $this->cart[$existingKey]['sub_total'] = $this->cart[$existingKey]['quantity'] * $this->cart[$existingKey]['selling_price'];
             }
         } else {
+            $normalPrice = (float) $product->selling_price;
             $this->cart[] = [
                 'product_id' => $product->id,
                 'name' => $product->name,
                 'sku' => $product->sku,
-                'selling_price' => (float) $product->selling_price,
+                'selling_price' => $normalPrice,
+                'member_price' => $isMember ? $effectivePrice : null,
+                'price_used' => $effectivePrice,
+                'is_member_pricing' => $isMember,
                 'quantity' => 1,
                 'stock' => $product->stock,
                 'unit' => $product->unit?->name ?? 'Unit',
-                'sub_total' => (float) $product->selling_price,
+                'sub_total' => $effectivePrice,
             ];
         }
 
         $this->search = '';
         $this->products = [];
+
+        if ($this->isMemberCustomer) {
+            $this->calculateSavings();
+        }
+
         $this->dispatch('focus-search');
+    }
+
+    private function getEffectivePrice(Product $product, bool $isMember): float
+    {
+        if (!$isMember) {
+            return (float) $product->selling_price;
+        }
+
+        // Use specific member_price if set
+        if ($product->member_price !== null && $product->member_price > 0) {
+            return (float) $product->member_price;
+        }
+
+        // Otherwise apply default member discount
+        $discountPercent = (float) $this->memberDiscountPercent;
+        $price = (float) $product->selling_price;
+        return $price - ($price * $discountPercent / 100);
+    }
+
+    public function recalculateCartPrices()
+    {
+        $isMember = $this->customer_id && $this->isMemberCustomer;
+        
+        foreach ($this->cart as $index => $item) {
+            $product = Product::find($item['product_id']);
+            if (!$product) continue;
+
+            $effectivePrice = $this->getEffectivePrice($product, $isMember);
+            $this->cart[$index]['selling_price'] = (float) $product->selling_price;
+            $this->cart[$index]['member_price'] = $isMember ? $effectivePrice : null;
+            $this->cart[$index]['price_used'] = $effectivePrice;
+            $this->cart[$index]['is_member_pricing'] = $isMember;
+            $this->cart[$index]['sub_total'] = $effectivePrice * $item['quantity'];
+        }
+
+        $this->calculateSavings();
+    }
+
+    private function calculateSavings()
+    {
+        $this->totalSavings = 0;
+        foreach ($this->cart as $item) {
+            if ($item['is_member_pricing'] ?? false) {
+                $normalTotal = $item['selling_price'] * $item['quantity'];
+                $memberTotal = $item['sub_total'];
+                $this->totalSavings += $normalTotal - $memberTotal;
+            }
+        }
     }
 
     public function updateQuantity($index, $quantity)
@@ -145,8 +208,9 @@ class Index extends Component
             $quantity = $maxStock;
         }
 
+        $priceUsed = $this->cart[$index]['price_used'] ?? $this->cart[$index]['selling_price'];
         $this->cart[$index]['quantity'] = $quantity;
-        $this->cart[$index]['sub_total'] = $quantity * $this->cart[$index]['selling_price'];
+        $this->cart[$index]['sub_total'] = $quantity * $priceUsed;
     }
 
     public function removeFromCart($index)
@@ -161,6 +225,18 @@ class Index extends Component
         if ($customer) {
             $this->customer_id = $customer->id;
             $this->customer_name = $customer->name;
+            $this->isMemberCustomer = $customer->is_member;
+            
+            if ($this->isMemberCustomer) {
+                $this->memberDiscountPercent = (float) ($customer->discount_percent ?? 5);
+            } else {
+                $this->memberDiscountPercent = 0;
+            }
+
+            // Recalculate cart prices with member pricing
+            if (count($this->cart) > 0) {
+                $this->recalculateCartPrices();
+            }
         }
         $this->showCustomerModal = false;
     }
@@ -179,12 +255,27 @@ class Index extends Component
 
         $this->customer_id = $customer->id;
         $this->customer_name = $customer->name;
+        $this->isMemberCustomer = false;
+        $this->memberDiscountPercent = 0;
         $this->showCustomerModal = false;
+
+        if (count($this->cart) > 0) {
+            $this->recalculateCartPrices();
+        }
     }
 
     public function getCartTotalProperty()
     {
         return array_sum(array_column($this->cart, 'sub_total'));
+    }
+
+    public function getCartTotalNormalProperty()
+    {
+        $total = 0;
+        foreach ($this->cart as $item) {
+            $total += $item['selling_price'] * $item['quantity'];
+        }
+        return $total;
     }
 
     public function getGrandTotalProperty()
@@ -206,6 +297,7 @@ class Index extends Component
             session()->flash('error', 'Keranjang masih kosong!');
             return;
         }
+        $this->calculateSavings();
         $this->paid_amount = $this->grand_total;
         $this->showPaymentModal = true;
     }
@@ -255,16 +347,18 @@ class Index extends Component
     {
         $this->reset(['cart', 'customer_id', 'customer_name', 'discount', 'tax', 
                       'paid_amount', 'payment_method', 'payment_status', 'notes',
-                      'showPaymentModal', 'showReceiptModal', 'lastTransaction']);
+                      'showPaymentModal', 'showReceiptModal', 'lastTransaction',
+                      'isMemberCustomer', 'memberDiscountPercent', 'totalSavings']);
         $this->dispatch('focus-search');
     }
 
     public function render()
     {
         $this->paid_amount = max($this->paid_amount, 0);
-        
+
         return view('livewire.pos.index', [
             'cart_total' => $this->cart_total,
+            'cart_total_normal' => $this->cart_total_normal,
             'grand_total' => $this->grand_total,
             'change_amount' => $this->change_amount,
         ])->layout('layouts.app', ['title' => 'POS / Kasir']);

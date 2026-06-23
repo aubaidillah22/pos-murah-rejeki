@@ -96,31 +96,6 @@ class TransactionListTest extends TestCase
     }
 
     /** @test */
-    public function can_filter_transactions_by_date()
-    {
-        $this->createTransaction(['transaction_date' => now()->subDays(5)]);
-        $this->createTransaction(['transaction_date' => now()]);
-
-        Livewire::actingAs($this->user)
-            ->test(TransactionList::class)
-            ->set('dateFrom', now()->format('Y-m-d'))
-            ->set('dateTo', now()->format('Y-m-d'))
-            ->assertSet('dateFrom', now()->format('Y-m-d'));
-    }
-
-    /** @test */
-    public function can_filter_transactions_by_payment_method()
-    {
-        $this->createTransaction(['payment_method' => 'cash']);
-        $this->createTransaction(['payment_method' => 'qris']);
-
-        Livewire::actingAs($this->user)
-            ->test(TransactionList::class)
-            ->set('paymentMethod', 'qris')
-            ->assertSet('paymentMethod', 'qris');
-    }
-
-    /** @test */
     public function can_search_transactions_by_invoice()
     {
         $this->createTransaction(['invoice_number' => 'INV-SEARCH-001']);
@@ -130,6 +105,40 @@ class TransactionListTest extends TestCase
             ->test(TransactionList::class)
             ->set('search', 'SEARCH')
             ->assertSee('INV-SEARCH-001');
+    }
+
+    /** @test */
+    public function can_search_transactions_by_payment_method()
+    {
+        $this->createTransaction(['payment_method' => 'qris']);
+        $this->createTransaction(['payment_method' => 'cash']);
+
+        Livewire::actingAs($this->user)
+            ->test(TransactionList::class)
+            ->set('search', 'qris')
+            ->assertSee('qris');
+    }
+
+    /** @test */
+    public function can_search_transactions_by_payment_status()
+    {
+        $this->createTransaction(['payment_status' => 'due']);
+
+        Livewire::actingAs($this->user)
+            ->test(TransactionList::class)
+            ->set('search', 'due')
+            ->assertSee('due');
+    }
+
+    /** @test */
+    public function can_export_excel()
+    {
+        $this->createTransaction();
+
+        Livewire::actingAs($this->user)
+            ->test(TransactionList::class)
+            ->call('exportExcel')
+            ->assertFileDownloaded();
     }
 
     /** @test */

@@ -23,6 +23,7 @@
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Telepon</th>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Email</th>
                     <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Member</th>
+                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Diskon</th>
                     <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Transaksi</th>
                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Aksi</th>
                 </tr>
@@ -37,6 +38,13 @@
                         <span class="text-xs {{ $c->is_member ? 'text-emerald-600 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900 px-2 py-1 rounded-full' : 'text-gray-400' }}">
                             {{ $c->is_member ? 'Member' : '-' }}
                         </span>
+                    </td>
+                    <td class="px-4 py-3 text-center">
+                        @if($c->is_member && $c->discount_percent > 0)
+                        <span class="text-xs font-medium text-purple-600 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded-full">{{ $c->discount_percent }}%</span>
+                        @else
+                        <span class="text-xs text-gray-400">-</span>
+                        @endif
                     </td>
                     <td class="px-4 py-3 text-center text-sm text-gray-500 dark:text-gray-400">{{ $c->transactions_count }}</td>
                     <td class="px-4 py-3 text-right whitespace-nowrap">
@@ -84,6 +92,16 @@
                 <div class="flex items-center space-x-2">
                     <input type="checkbox" wire:model="is_member" id="is_member" class="rounded border-gray-300 dark:border-gray-600 dark:bg-gray-700">
                     <label for="is_member" class="text-sm text-gray-700 dark:text-gray-300">Member</label>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">Diskon Member (%)</label>
+                    <div class="flex items-center gap-2">
+                        <input type="number" wire:model="discount_percent" min="0" max="100" step="0.5"
+                               class="w-24 border border-purple-300 dark:border-purple-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <span class="text-sm text-gray-500">%</span>
+                    </div>
+                    @error('discount_percent') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+                    <p class="text-xs text-gray-400 mt-1">Diskon otomatis di halaman POS saat pelanggan ini dipilih</p>
                 </div>
                 <div class="flex gap-2 justify-end pt-2">
                     <button type="button" wire:click="$set('showForm', false)" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Batal</button>

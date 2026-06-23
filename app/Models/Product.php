@@ -20,6 +20,7 @@ class Product extends Model
         'unit_id',
         'purchase_price',
         'selling_price',
+        'member_price',
         'stock',
         'min_stock_alert',
         'product_image',
@@ -33,6 +34,7 @@ class Product extends Model
         return [
             'purchase_price' => 'decimal:2',
             'selling_price' => 'decimal:2',
+            'member_price' => 'decimal:2',
             'stock' => 'integer',
             'min_stock_alert' => 'integer',
             'is_active' => 'boolean',

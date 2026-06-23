@@ -38,6 +38,7 @@
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">SKU</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Kategori</th>
                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Harga Jual</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Harga Member</th>
                         <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Stok</th>
                         <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Aksi</th>
                     </tr>
@@ -49,6 +50,13 @@
                         <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $product->sku ?? '-' }}</td>
                         <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">{{ $product->category?->name ?? '-' }}</td>
                         <td class="px-4 py-3 text-sm font-medium text-emerald-600">Rp {{ number_format($product->selling_price, 0, ',', '.') }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                            @if($product->member_price)
+                            <span class="text-purple-600 font-medium">Rp {{ number_format($product->member_price, 0, ',', '.') }}</span>
+                            @else
+                            <span class="text-gray-400">-</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-center">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                 {{ $product->isStockLow() ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300' : 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-300' }}">
@@ -67,7 +75,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="6" class="empty-state"><p class="empty-state-text">Belum ada produk</p><p class="empty-state-sub">Klik "Tambah Produk" untuk menambahkan produk baru</p></td></tr>
+                    <tr><td colspan="7" class="empty-state"><p class="empty-state-text">Belum ada produk</p><p class="empty-state-sub">Klik "Tambah Produk" untuk menambahkan produk baru</p></td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -120,8 +128,7 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
+                </div>                    <div class="grid grid-cols-3 gap-3">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Harga Beli *</label>
                         <input type="number" wire:model="purchase_price" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
@@ -129,6 +136,11 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Harga Jual *</label>
                         <input type="number" wire:model="selling_price" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">Harga Member</label>
+                        <input type="number" wire:model="member_price" class="w-full border border-purple-300 dark:border-purple-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" placeholder="Kosong = pakai diskon default">
+                        @error('member_price') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">

@@ -30,6 +30,7 @@ class ProductList extends Component
     public $selected_unit_id;
     public $purchase_price;
     public $selling_price;
+    public $member_price;
     public $stock;
     public $min_stock_alert;
     public $product_image;
@@ -48,6 +49,7 @@ class ProductList extends Component
             'selected_unit_id' => 'nullable|exists:units,id',
             'purchase_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
+            'member_price' => 'nullable|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'min_stock_alert' => 'required|integer|min:0',
             'product_image' => 'nullable|image|max:1024',
@@ -83,6 +85,7 @@ class ProductList extends Component
         $this->selected_unit_id = $product->unit_id;
         $this->purchase_price = $product->purchase_price;
         $this->selling_price = $product->selling_price;
+        $this->member_price = $product->member_price;
         $this->stock = $product->stock;
         $this->min_stock_alert = $product->min_stock_alert;
         $this->description = $product->description;
@@ -102,6 +105,7 @@ class ProductList extends Component
             'unit_id' => $this->selected_unit_id,
             'purchase_price' => $this->purchase_price,
             'selling_price' => $this->selling_price,
+            'member_price' => $this->member_price ?: null,
             'stock' => $this->stock,
             'min_stock_alert' => $this->min_stock_alert,
             'description' => $this->description,
@@ -168,6 +172,7 @@ class ProductList extends Component
                 'Satuan' => $p->unit?->name,
                 'Harga Beli' => $p->purchase_price,
                 'Harga Jual' => $p->selling_price,
+                'Harga Member' => $p->member_price ?? '',
                 'Stok' => $p->stock,
                 'Min Stok' => $p->min_stock_alert,
             ];
@@ -179,7 +184,7 @@ class ProductList extends Component
     public function resetForm()
     {
         $this->reset(['product_id', 'name', 'sku', 'barcode', 'selected_category_id',
-                      'selected_unit_id', 'purchase_price', 'selling_price', 'stock',
+                      'selected_unit_id', 'purchase_price', 'selling_price', 'member_price', 'stock',
                       'min_stock_alert', 'product_image', 'description']);
         $this->is_active = true;
     }

@@ -1,7 +1,13 @@
 <div>
-    <div class="flex items-center justify-between mb-4">
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Manajemen Kategori</h2>
-        <div class="flex gap-2">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <div class="relative flex-1 max-w-md">
+            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari kategori..."
+                   class="w-full pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+        </div>
+        <div class="flex gap-2 shrink-0">
             <button wire:click="exportExcel" class="px-3 py-2 border border-primary-300 dark:border-primary-600 text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/40 rounded-lg text-sm font-medium">
                 ⬇ Ekspor
             </button>
@@ -47,6 +53,9 @@
                 @endforeach
             </tbody>
         </table>
+        @if($categories->hasPages())
+        <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700">{{ $categories->links() }}</div>
+        @endif
     </div>
 
     <!-- Form Modal -->

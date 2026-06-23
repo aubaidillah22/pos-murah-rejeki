@@ -23,6 +23,7 @@ class CustomerList extends Component
     public $email;
     public $address;
     public $is_member = false;
+    public $discount_percent = 0;
     public $editId = null;
     public $showForm = false;
     public $showDeleteModal = false;
@@ -36,13 +37,22 @@ class CustomerList extends Component
             'email' => 'nullable|email',
             'address' => 'nullable|string',
             'is_member' => 'boolean',
+            'discount_percent' => 'required|numeric|min:0|max:100',
         ];
+    }
+
+    public function updatedIsMember($value)
+    {
+        if (!$value) {
+            $this->discount_percent = 0;
+        }
     }
 
     public function create()
     {
         $this->reset(['name', 'phone', 'email', 'address', 'editId']);
         $this->is_member = false;
+        $this->discount_percent = 0;
         $this->showForm = true;
     }
 
@@ -55,13 +65,14 @@ class CustomerList extends Component
         $this->email = $c->email;
         $this->address = $c->address;
         $this->is_member = $c->is_member;
+        $this->discount_percent = $c->discount_percent ?? 0;
         $this->showForm = true;
     }
 
     public function save()
     {
         $this->validate();
-        $data = ['name' => $this->name, 'phone' => $this->phone, 'email' => $this->email, 'address' => $this->address, 'is_member' => $this->is_member];
+        $data = ['name' => $this->name, 'phone' => $this->phone, 'email' => $this->email, 'address' => $this->address, 'is_member' => $this->is_member, 'discount_percent' => $this->discount_percent];
 
         if ($this->editId) {
             $c = Customer::findOrFail($this->editId);
@@ -73,7 +84,7 @@ class CustomerList extends Component
             activity()->performedOn($c)->log('Pelanggan dibuat: ' . $c->name);
             session()->flash('success', 'Pelanggan berhasil ditambahkan!');
         }
-        $this->reset(['name', 'phone', 'email', 'address', 'editId', 'showForm']);
+        $this->reset(['name', 'phone', 'email', 'address', 'editId', 'showForm', 'discount_percent']);
     }
 
     public function confirmDelete($id)
@@ -112,6 +123,7 @@ class CustomerList extends Component
                 'Email' => $c->email ?? '',
                 'Alamat' => $c->address ?? '',
                 'Member' => $c->is_member ? 'Ya' : 'Tidak',
+                'Diskon Member %' => $c->is_member ? ($c->discount_percent ?? 0) . '%' : '-',
                 'Jumlah Transaksi' => $c->transactions_count,
             ];
         });

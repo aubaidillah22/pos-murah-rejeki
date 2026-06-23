@@ -5,6 +5,7 @@ namespace App\Livewire\Outlet;
 use App\Models\Outlet;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class OutletList extends Component
 {
@@ -135,6 +136,23 @@ class OutletList extends Component
     {
         $this->reset(['editId', 'name', 'address', 'phone', 'email']);
         $this->is_active = true;
+    }
+
+    public function exportExcel()
+    {
+        $outlets = Outlet::orderBy('name')->get();
+
+        $exportData = $outlets->map(function ($o) {
+            return [
+                'Nama' => $o->name,
+                'Alamat' => $o->address ?? '',
+                'Telepon' => $o->phone ?? '',
+                'Email' => $o->email ?? '',
+                'Status' => $o->is_active ? 'Aktif' : 'Nonaktif',
+            ];
+        });
+
+        return (new FastExcel($exportData))->download('outlet-' . now()->format('Ymd-His') . '.xlsx');
     }
 
     public function render()

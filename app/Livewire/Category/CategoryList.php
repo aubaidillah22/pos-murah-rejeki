@@ -4,10 +4,14 @@ namespace App\Livewire\Category;
 
 use App\Models\Category;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Rap2hpoutre\FastExcel\FastExcel;
 
 class CategoryList extends Component
 {
+    use WithPagination;
+
+    public $search = '';
     public $name;
     public $description;
     public $editId = null;
@@ -21,6 +25,11 @@ class CategoryList extends Component
             'name' => 'required|min:2|unique:categories,name,' . ($this->editId ?? ''),
             'description' => 'nullable|string',
         ];
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 
     public function create()
@@ -100,6 +109,7 @@ class CategoryList extends Component
     public function exportExcel()
     {
         $categories = Category::withCount('products')
+            ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'))
             ->when(auth()->user()->outlet_id, fn($q) => $q->where('outlet_id', auth()->user()->outlet_id))
             ->orderBy('name')
             ->get();
@@ -119,7 +129,11 @@ class CategoryList extends Component
     public function render()
     {
         return view('livewire.category.category-list', [
-            'categories' => Category::withCount('products')->orderBy('name')->get(),
+            'categories' => Category::withCount('products')
+                ->when(auth()->user()->outlet_id, fn($q) => $q->where('outlet_id', auth()->user()->outlet_id))
+                ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'))
+                ->orderBy('name')
+                ->paginate(15),
         ])->layout('layouts.app', ['title' => 'Kategori']);
     }
 }

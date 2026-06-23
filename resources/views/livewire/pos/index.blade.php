@@ -168,6 +168,15 @@
                         {{ $customer_name ?: 'Pilih Pelanggan' }}
                     </button>
                 </div>
+                @if($isMemberCustomer)
+                <div class="mt-1.5 flex items-center gap-1.5">
+                    <span class="px-2 py-0.5 text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full">👑 Member</span>
+                    <span class="text-xs text-purple-500">{{ $memberDiscountPercent }}% diskon</span>
+                    @if($totalSavings > 0)
+                    <span class="text-xs text-purple-500">· Hemat -Rp {{ number_format($totalSavings, 0, ',', '.') }}</span>
+                    @endif
+                </div>
+                @endif
             </div>
 
             <!-- Cart Items -->
@@ -177,7 +186,15 @@
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">{{ $item['name'] }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Rp {{ number_format($item['selling_price'], 0, ',', '.') }}/{{ $item['unit'] }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                @if($item['is_member_pricing'] ?? false)
+                                    <span class="text-purple-600 font-medium">Rp {{ number_format($item['price_used'], 0, ',', '.') }}</span>
+                                    <span class="line-through ml-1">Rp {{ number_format($item['selling_price'], 0, ',', '.') }}</span>
+                                @else
+                                    Rp {{ number_format($item['selling_price'], 0, ',', '.') }}
+                                @endif
+                                /{{ $item['unit'] }}
+                            </p>
                         </div>
                         <button wire:click="removeFromCart({{ $index }})" class="text-red-400 hover:text-red-600 ml-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,6 +226,16 @@
             <!-- Summary & Payment -->
             @if(count($cart) > 0)
             <div class="border-t border-gray-200 dark:border-gray-700 pt-4 space-y-2">
+                @if($isMemberCustomer && $cart_total_normal > $cart_total)
+                <div class="flex justify-between text-sm text-purple-600">
+                    <span>👑 Harga Normal</span>
+                    <span class="line-through">Rp {{ number_format($cart_total_normal, 0, ',', '.') }}</span>
+                </div>
+                <div class="flex justify-between text-sm text-purple-600">
+                    <span>💜 Hemat Member</span>
+                    <span class="font-semibold">-Rp {{ number_format($cart_total_normal - $cart_total, 0, ',', '.') }}</span>
+                </div>
+                @endif
                 <div class="flex justify-between text-sm">
                     <span class="text-gray-500 dark:text-gray-400">Total</span>
                     <span class="font-medium">Rp {{ number_format($cart_total, 0, ',', '.') }}</span>
@@ -274,6 +301,21 @@
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Pembayaran</h3>
             
+            @if($isMemberCustomer && $totalSavings > 0)
+            <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-700 rounded-lg p-3 mb-4">
+                <div class="flex items-start gap-2">
+                    <span class="text-lg">👑</span>
+                    <div>
+                        <p class="text-sm font-semibold text-purple-800 dark:text-purple-200">Harga Member Aktif</p>
+                        <p class="text-xs text-purple-600 dark:text-purple-400 mt-0.5">
+                            Anda mendapat diskon member <strong>{{ $memberDiscountPercent }}%</strong>.
+                            Hemat <strong>Rp {{ number_format($totalSavings, 0, ',', '.') }}</strong> dari harga normal!
+                        </p>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <div class="space-y-3 mb-4">
                 <div class="flex justify-between text-lg font-bold">
                     <span>Total Bayar</span>

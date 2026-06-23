@@ -111,6 +111,17 @@ class OutletListTest extends TestCase
     }
 
     /** @test */
+    public function can_export_excel()
+    {
+        Outlet::factory()->count(3)->create();
+
+        Livewire::actingAs($this->admin)
+            ->test(OutletList::class)
+            ->call('exportExcel')
+            ->assertFileDownloaded();
+    }
+
+    /** @test */
     public function guest_cannot_access_outlet_list()
     {
         $response = $this->get('/outlets');
