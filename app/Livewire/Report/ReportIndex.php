@@ -21,6 +21,26 @@ class ReportIndex extends Component
         $this->dateTo = now()->format('Y-m-d');
     }
 
+    public function updatedActiveTab()
+    {
+        $this->dispatch('tab-changed');
+    }
+
+    public function updatedDateFrom()
+    {
+        $this->dispatch('filters-updated');
+    }
+
+    public function updatedDateTo()
+    {
+        $this->dispatch('filters-updated');
+    }
+
+    public function updatedCategory()
+    {
+        $this->dispatch('filters-updated');
+    }
+
     public function exportPdf($type)
     {
         $reportService = app(ReportService::class);

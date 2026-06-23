@@ -1,19 +1,40 @@
 <div>
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         <div class="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-            <button wire:click="$set('activeTab', 'sales')" class="px-3 py-2 text-sm rounded-md {{ $activeTab === 'sales' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Penjualan</button>
-            <button wire:click="$set('activeTab', 'profit')" class="px-3 py-2 text-sm rounded-md {{ $activeTab === 'profit' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Laba/Rugi</button>
-            <button wire:click="$set('activeTab', 'stock')" class="px-3 py-2 text-sm rounded-md {{ $activeTab === 'stock' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Stok</button>
-            <button wire:click="$set('activeTab', 'cashflow')" class="px-3 py-2 text-sm rounded-md {{ $activeTab === 'cashflow' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Arus Kas</button>
-            <button wire:click="$set('activeTab', 'expenses')" class="px-3 py-2 text-sm rounded-md {{ $activeTab === 'expenses' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Pengeluaran</button>
+            <button wire:click="$set('activeTab', 'sales')" class="px-3 py-2 text-sm rounded-md transition-all {{ $activeTab === 'sales' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Penjualan</button>
+            <button wire:click="$set('activeTab', 'profit')" class="px-3 py-2 text-sm rounded-md transition-all {{ $activeTab === 'profit' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Laba/Rugi</button>
+            <button wire:click="$set('activeTab', 'stock')" class="px-3 py-2 text-sm rounded-md transition-all {{ $activeTab === 'stock' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Stok</button>
+            <button wire:click="$set('activeTab', 'cashflow')" class="px-3 py-2 text-sm rounded-md transition-all {{ $activeTab === 'cashflow' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Arus Kas</button>
+            <button wire:click="$set('activeTab', 'expenses')" class="px-3 py-2 text-sm rounded-md transition-all {{ $activeTab === 'expenses' ? 'bg-white dark:bg-gray-800 shadow text-emerald-700 dark:text-emerald-400 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200' }}">Pengeluaran</button>
         </div>
         <div class="flex items-center gap-2">
-            <input type="date" wire:model.live="dateFrom" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <div class="flex items-center gap-1">
+                <label class="text-xs text-gray-400 dark:text-gray-500">Dari</label>
+                <input type="date" wire:model.live="dateFrom"
+                       class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            </div>
             <span class="text-gray-400">-</span>
-            <input type="date" wire:model.live="dateTo" class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-            <button wire:click="exportPdf('{{ $activeTab }}')" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm">📄 PDF</button>
-            <button wire:click="exportExcel('{{ $activeTab }}')" class="px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm">⬇ Excel</button>
+            <div class="flex items-center gap-1">
+                <label class="text-xs text-gray-400 dark:text-gray-500">Sampai</label>
+                <input type="date" wire:model.live="dateTo"
+                       class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            </div>
+            <span class="mx-1 w-px h-5 bg-gray-200 dark:bg-gray-700"></span>
+            <button wire:click="exportPdf('{{ $activeTab }}')" class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm whitespace-nowrap">📄 PDF</button>
+            <button wire:click="exportExcel('{{ $activeTab }}')" class="px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm whitespace-nowrap">⬇ Excel</button>
         </div>
+    </div>
+
+    <!-- Filter period indicator -->
+    <div class="mb-4 text-xs text-gray-400 dark:text-gray-500 flex items-center gap-2">
+        <span>Periode: <span class="font-medium text-gray-600 dark:text-gray-300">{{ \Carbon\Carbon::parse($dateFrom)->format('d/m/Y') }}</span> - <span class="font-medium text-gray-600 dark:text-gray-300">{{ \Carbon\Carbon::parse($dateTo)->format('d/m/Y') }}</span></span>
+        <span wire:loading wire:target="dateFrom, dateTo, category, activeTab" class="inline-flex items-center gap-1 text-emerald-500">
+            <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Memperbarui...
+        </span>
     </div>
 
     <!-- Sales Report -->
