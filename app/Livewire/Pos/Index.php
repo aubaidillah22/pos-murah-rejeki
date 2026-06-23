@@ -74,6 +74,25 @@ class Index extends Component
         }
     }
 
+    public function quickAddBySearch()
+    {
+        if (empty($this->search)) return;
+
+        $outletId = auth()->user()->outlet_id;
+        $product = Product::where(function ($q) {
+                $q->where('sku', $this->search)
+                  ->orWhere('barcode', $this->search);
+            })
+            ->where('is_active', true)
+            ->where('stock', '>', 0)
+            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->first();
+
+        if ($product) {
+            $this->addToCart($product->id);
+        }
+    }
+
     public function addToCart($productId)
     {
         $product = Product::findOrFail($productId);
@@ -114,6 +133,7 @@ class Index extends Component
 
         $this->search = '';
         $this->products = [];
+        $this->dispatch('focus-search');
     }
 
     public function updateQuantity($index, $quantity)
@@ -236,6 +256,7 @@ class Index extends Component
         $this->reset(['cart', 'customer_id', 'customer_name', 'discount', 'tax', 
                       'paid_amount', 'payment_method', 'payment_status', 'notes',
                       'showPaymentModal', 'showReceiptModal', 'lastTransaction']);
+        $this->dispatch('focus-search');
     }
 
     public function render()

@@ -42,8 +42,10 @@ class StockOpnameList extends Component
     {
         if (strlen($this->searchProduct) >= 1) {
             $this->searchResults = Product::with(['category', 'unit'])
-                ->where('name', 'like', '%' . $this->searchProduct . '%')
-                ->orWhere('sku', 'like', '%' . $this->searchProduct . '%')
+                ->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->searchProduct . '%')
+                      ->orWhere('sku', 'like', '%' . $this->searchProduct . '%');
+                })
                 ->where('is_active', true)
                 ->limit(10)
                 ->get()
@@ -156,10 +158,12 @@ class StockOpnameList extends Component
     {
         $query = StockOpname::with(['product', 'product.unit', 'user'])
             ->when($this->search, function ($q) {
-                $q->where('opname_number', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('product', function ($pq) {
-                      $pq->where('name', 'like', '%' . $this->search . '%');
-                  });
+                $q->where(function ($sq) {
+                    $sq->where('opname_number', 'like', '%' . $this->search . '%')
+                       ->orWhereHas('product', function ($pq) {
+                           $pq->where('name', 'like', '%' . $this->search . '%');
+                       });
+                });
             })
             ->when($this->typeFilter, fn($q) => $q->where('type', $this->typeFilter))
             ->when(auth()->user()->outlet_id, fn($q) => $q->where('outlet_id', auth()->user()->outlet_id))

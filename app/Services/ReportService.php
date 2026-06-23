@@ -45,7 +45,7 @@ class ReportService
             ->when($outletId, fn($q) => $q->where('transactions.outlet_id', $outletId))
             ->join('transaction_details', 'transactions.id', '=', 'transaction_details.transaction_id')
             ->join('products', 'transaction_details.product_id', '=', 'products.id')
-            ->sum(DB::raw('transaction_details.quantity * products.purchase_price'));
+            ->sum(DB::raw('transaction_details.quantity * COALESCE(products.purchase_price, 0)'));
 
         // Total pengeluaran
         $totalExpenses = Expense::whereBetween('expense_date', [$startDate, $endDate])

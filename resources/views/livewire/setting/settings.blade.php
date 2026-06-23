@@ -237,7 +237,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
                     <div>
                         <span class="text-gray-500 dark:text-gray-400">Database:</span>
-                        <span class="ml-1 font-medium dark:text-gray-200">{{ config('database.connections.mysql.database') }}</span>
+                        <span class="ml-1 font-medium dark:text-gray-200">{{ \Illuminate\Support\Facades\DB::connection()->getDatabaseName() }}</span>
                     </div>
                     <div>
                         <span class="text-gray-500 dark:text-gray-400">Engine:</span>

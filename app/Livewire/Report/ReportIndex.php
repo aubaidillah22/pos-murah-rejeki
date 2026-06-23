@@ -45,7 +45,7 @@ class ReportIndex extends Component
     {
         $reportService = app(ReportService::class);
         $outletId = auth()->user()->outlet_id;
-        
+
         if ($type === 'sales') {
             $data = $reportService->getSalesReport($this->dateFrom, $this->dateTo, $outletId);
             $pdf = Pdf::loadView('exports.sales-pdf', compact('data'));
@@ -55,6 +55,8 @@ class ReportIndex extends Component
             $pdf = Pdf::loadView('exports.profit-pdf', compact('data'));
             return response()->streamDownload(fn() => print($pdf->output()), 'laporan-lab-rugi.pdf');
         }
+
+        session()->flash('error', 'Ekspor PDF untuk tab ini belum tersedia.');
     }
 
     public function exportExcel($type)
@@ -116,11 +118,7 @@ class ReportIndex extends Component
             $filename = 'laporan-arus-kas-' . now()->format('Ymd-His') . '.xlsx';
 
         } elseif ($type === 'expenses') {
-            $data = Expense::whereBetween('expense_date', [$this->dateFrom, $this->dateTo])
-                ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
-                ->when($this->category, fn($q) => $q->where('category', $this->category))
-                ->orderBy('expense_date', 'desc')
-                ->get();
+            $data = $this->getExpenses();
             $exportData = $data->map(function ($e) {
                 return [
                     'Tanggal' => $e->expense_date->format('d/m/Y'),
@@ -138,6 +136,17 @@ class ReportIndex extends Component
         return response()->streamDownload(function () use ($exportData) {
             echo (new FastExcel($exportData))->export('php://output');
         }, $filename);
+    }
+
+    private function getExpenses()
+    {
+        $outletId = auth()->user()->outlet_id;
+
+        return Expense::whereBetween('expense_date', [$this->dateFrom, $this->dateTo])
+            ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
+            ->when($this->category, fn($q) => $q->where('category', $this->category))
+            ->orderBy('expense_date', 'desc')
+            ->get();
     }
 
     public function render()
@@ -160,11 +169,7 @@ class ReportIndex extends Component
         } elseif ($this->activeTab === 'cashflow') {
             $cashFlow = $reportService->getCashFlow($this->dateFrom, $this->dateTo, $outletId);
         } elseif ($this->activeTab === 'expenses') {
-            $expenses = Expense::whereBetween('expense_date', [$this->dateFrom, $this->dateTo])
-                ->when($outletId, fn($q) => $q->where('outlet_id', $outletId))
-                ->when($this->category, fn($q) => $q->where('category', $this->category))
-                ->orderBy('expense_date', 'desc')
-                ->get();
+            $expenses = $this->getExpenses();
         }
 
         return view('livewire.report.report-index', compact(

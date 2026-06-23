@@ -12,6 +12,12 @@ class CustomerList extends Component
 
     public $search = '';
     public $name;
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public $phone;
     public $email;
     public $address;
@@ -96,8 +102,12 @@ class CustomerList extends Component
     {
         return view('livewire.customer.customer-list', [
             'customers' => Customer::withCount('transactions')
-                ->where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('phone', 'like', '%' . $this->search . '%')
+                ->when($this->search, function ($q) {
+                    $q->where(function ($sq) {
+                        $sq->where('name', 'like', '%' . $this->search . '%')
+                           ->orWhere('phone', 'like', '%' . $this->search . '%');
+                    });
+                })
                 ->orderBy('name')
                 ->paginate(15),
         ])->layout('layouts.app', ['title' => 'Pelanggan']);

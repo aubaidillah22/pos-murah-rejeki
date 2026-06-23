@@ -98,10 +98,12 @@ class TransactionList extends Component
         $query = Transaction::with(['customer', 'user'])
             ->notVoided()
             ->when($this->search, function ($q) {
-                $q->where('invoice_number', 'like', '%' . $this->search . '%')
-                  ->orWhere('notes', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('customer', fn($cq) => $cq->where('name', 'like', '%' . $this->search . '%'))
-                  ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', '%' . $this->search . '%'));
+                $q->where(function ($sq) {
+                    $sq->where('invoice_number', 'like', '%' . $this->search . '%')
+                      ->orWhere('notes', 'like', '%' . $this->search . '%')
+                      ->orWhereHas('customer', fn($cq) => $cq->where('name', 'like', '%' . $this->search . '%'))
+                      ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', '%' . $this->search . '%'));
+                });
             })
             ->when($this->dateFrom, fn($q) => $q->whereDate('transaction_date', '>=', $this->dateFrom))
             ->when($this->dateTo, fn($q) => $q->whereDate('transaction_date', '<=', $this->dateTo))
