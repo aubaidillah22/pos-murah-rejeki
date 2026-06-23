@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('app.name') }} @isset($title) - {{ $title }} @endisset</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
@@ -79,36 +80,55 @@
         .animate-fade-in {
             animation: fade-in-up 0.4s ease-out both;
         }
+        @keyframes loading-bar { 0% { left: -30%; } 50% { left: 50%; } 100% { left: 130%; } }
+        .animate-loading { animation: loading-bar 1.2s ease-in-out infinite; }
+        #loading-bar { position: fixed; top: 0; left: 0; z-index: 9999; width: 100%; height: 3px; display: none; }
     </style>
     <script>
+        function ensureLoadingBar() {
+            if (document.getElementById('loading-bar')) return;
+            var bar = document.createElement('div');
+            bar.id = 'loading-bar';
+            bar.innerHTML = '<div class="animate-loading absolute inset-0 bg-gradient-to-r from-emerald-400 via-emerald-600 to-emerald-400 rounded-full"></div>';
+            document.documentElement.appendChild(bar);
+        }
+        function showLoadingBar() {
+            ensureLoadingBar();
+            document.getElementById('loading-bar').style.display = '';
+        }
+        function hideLoadingBar() {
+            var bar = document.getElementById('loading-bar');
+            if (bar) bar.style.display = 'none';
+        }
         function applyDarkMode() {
             const isDark = localStorage.getItem('darkMode') === 'true' ||
                 (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
             document.documentElement.classList.toggle('dark', isDark);
         }
-        document.addEventListener('livewire:navigated', () => {
-            applyDarkMode();
+        function animatePageIn() {
             const el = document.getElementById('page-content');
             if (!el) return;
             el.classList.remove('page-enter-active');
             void el.offsetWidth;
             el.classList.add('page-enter-active');
+        }
+        document.addEventListener('livewire:navigating', showLoadingBar);
+        document.addEventListener('livewire:navigated', function() {
+            hideLoadingBar();
+            applyDarkMode();
+            animatePageIn();
         });
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
+            hideLoadingBar();
             applyDarkMode();
-            const el = document.getElementById('page-content');
-            if (!el) return;
-            el.classList.remove('page-enter-active');
-            void el.offsetWidth;
-            el.classList.add('page-enter-active');
+            animatePageIn();
         });
     </script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 font-sans antialiased">
-
     <div x-data="{ sidebarOpen: false, sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true', dark: localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" class="min-h-screen">
         <!-- Mobile overlay -->
-        <div x-show="sidebarOpen" x-cloak 
+        <div x-show="sidebarOpen" x-cloak
              class="fixed inset-0 z-40 bg-black/50 lg:hidden"
              @@click="sidebarOpen = false">
         </div>
