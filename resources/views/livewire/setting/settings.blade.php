@@ -12,6 +12,11 @@
                            {{ $activeTab === 'receipt' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' }}">
                 🧾 Struk Transaksi
             </button>
+            <button wire:click="$set('activeTab', 'backup')"
+                    class="pb-3 text-sm font-medium border-b-2 transition-colors
+                           {{ $activeTab === 'backup' ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200' }}">
+                💾 Backup Database
+            </button>
         </nav>
     </div>
 
@@ -210,6 +215,63 @@
             <div class="flex justify-end pt-2 border-t border-gray-200 dark:border-gray-700">
                 <button type="submit" class="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium">
                     💾 Simpan Pengaturan Struk
+                </button>
+            </div>
+        </div>
+        @endif
+
+        <!-- Backup Database -->
+        @if($activeTab === 'backup')
+        <div class="card p-6 space-y-6">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Backup Database</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Unduh seluruh database dalam format SQL. Backup ini mencakup semua tabel, struktur, dan data untuk keperluan pemulihan data.</p>
+
+            @if($backupError && $backupMessage)
+            <div class="bg-red-50 dark:bg-red-900/30 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm">
+                {{ $backupMessage }}
+            </div>
+            @endif
+
+            <div class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 space-y-3">
+                <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Informasi Backup</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">Database:</span>
+                        <span class="ml-1 font-medium dark:text-gray-200">{{ config('database.connections.mysql.database') }}</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">Engine:</span>
+                        <span class="ml-1 font-medium dark:text-gray-200">{{ config('database.default') }}</span>
+                    </div>
+                    <div>
+                        <span class="text-gray-500 dark:text-gray-400">Backup Terakhir:</span>
+                        <span class="ml-1 font-medium dark:text-gray-200">
+                            {{ $lastBackup ? \Carbon\Carbon::parse($lastBackup)->format('d/m/Y H:i:s') : 'Belum pernah' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/50 rounded-lg p-4 text-sm text-amber-700 dark:text-amber-400 space-y-1">
+                <p class="font-medium">Perhatian:</p>
+                <ul class="list-disc list-inside space-y-0.5 text-amber-600 dark:text-amber-300">
+                    <li>Backup berisi seluruh data toko termasuk transaksi, produk, dan pelanggan.</li>
+                    <li>Simpan file backup di tempat yang aman.</li>
+                    <li>Untuk memulihkan data, gunakan aplikasi manajemen database seperti phpMyAdmin atau MySQL CLI.</li>
+                </ul>
+            </div>
+
+            <div class="flex justify-end pt-2 border-t border-gray-200 dark:border-gray-700">
+                <button type="button" wire:click="backupDatabase" wire:loading.attr="disabled"
+                        class="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-wait transition-colors text-sm font-medium inline-flex items-center gap-2">
+                    <span wire:loading.remove wire:target="backupDatabase">💾 Download Backup SQL</span>
+                    <span wire:loading wire:target="backupDatabase">
+                        <svg class="animate-spin h-4 w-4 inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Memproses...
+                    </span>
                 </button>
             </div>
         </div>

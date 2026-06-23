@@ -3,6 +3,7 @@
 namespace App\Livewire\Setting;
 
 use App\Models\Setting;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class Index extends Component
@@ -25,6 +26,10 @@ class Index extends Component
     public $receipt_show_sku = false;
     public $receipt_header = '';
 
+    public $lastBackup = null;
+    public $backupMessage = null;
+    public $backupError = false;
+
     public function mount()
     {
         $this->loadSettings();
@@ -46,6 +51,7 @@ class Index extends Component
         $this->receipt_show_change = Setting::getValue('receipt_show_change', '1') === '1';
         $this->receipt_show_sku = Setting::getValue('receipt_show_sku', '0') === '1';
         $this->receipt_header = Setting::getValue('receipt_header', '');
+        $this->lastBackup = Setting::getValue('last_backup', null);
     }
 
     protected function rules()
@@ -84,6 +90,81 @@ class Index extends Component
 
         $this->dispatch('settings-saved');
         session()->flash('success', 'Pengaturan berhasil disimpan!');
+    }
+
+    public function backupDatabase()
+    {
+        $this->backupError = false;
+        $this->backupMessage = null;
+
+        try {
+            $tables = DB::select('SHOW TABLES');
+            $dbName = DB::connection()->getDatabaseName();
+            $key = 'Tables_in_' . $dbName;
+
+            $sql = "-- ===========================================\n";
+            $sql .= "-- Database Backup: " . $dbName . "\n";
+            $sql .= "-- Tanggal: " . now()->format('d/m/Y H:i:s') . "\n";
+            $sql .= "-- Aplikasi: " . config('app.name') . "\n";
+            $sql .= "-- ===========================================\n\n";
+            $sql .= "SET FOREIGN_KEY_CHECKS=0;\n";
+            $sql .= "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';\n\n";
+
+            foreach ($tables as $table) {
+                $tableName = $table->$key;
+
+                $createTable = DB::select("SHOW CREATE TABLE `$tableName`");
+                $createSql = $createTable[0]->{'Create Table'};
+
+                $sql .= "-- -----------------------------------------\n";
+                $sql .= "-- Table: `$tableName`\n";
+                $sql .= "-- -----------------------------------------\n";
+                $sql .= "DROP TABLE IF EXISTS `$tableName`;\n";
+                $sql .= $createSql . ";\n\n";
+
+                $rows = DB::table($tableName)->get();
+                if ($rows->isNotEmpty()) {
+                    $cols = array_keys(get_object_vars($rows[0]));
+                    $colNames = implode('`, `', $cols);
+                    $sql .= "INSERT INTO `$tableName` (`$colNames`) VALUES\n";
+
+                    $values = [];
+                    foreach ($rows as $row) {
+                        $vals = [];
+                        foreach ($cols as $col) {
+                            $val = $row->$col;
+                            if (is_null($val)) {
+                                $vals[] = 'NULL';
+                            } elseif (is_int($val) || is_float($val)) {
+                                $vals[] = $val;
+                            } else {
+                                $vals[] = "'" . str_replace(["'", "\\"], ["''", "\\\\"], $val) . "'";
+                            }
+                        }
+                        $values[] = '(' . implode(', ', $vals) . ')';
+                    }
+                    $sql .= implode(",\n", $values) . ";\n\n";
+                }
+            }
+
+            $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
+            $sql .= "-- Backup completed: " . now()->format('d/m/Y H:i:s') . "\n";
+
+            $filename = 'backup-' . now()->format('Ymd-His') . '.sql';
+
+            Setting::setValue('last_backup', now()->format('Y-m-d H:i:s'));
+            $this->lastBackup = now()->format('Y-m-d H:i:s');
+
+            activity()->log('Database backup berhasil diunduh');
+
+            return response()->streamDownload(function () use ($sql) {
+                echo $sql;
+            }, $filename);
+
+        } catch (\Exception $e) {
+            $this->backupError = true;
+            $this->backupMessage = 'Gagal membuat backup: ' . $e->getMessage();
+        }
     }
 
     public function render()
