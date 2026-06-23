@@ -1,7 +1,12 @@
 <div>
     <div class="flex items-center justify-between mb-4">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Manajemen Kategori</h2>
-        <button wire:click="create" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">+ Tambah Kategori</button>
+        <div class="flex gap-2">
+            <button wire:click="exportExcel" class="px-3 py-2 border border-primary-300 dark:border-primary-600 text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/40 rounded-lg text-sm font-medium">
+                ⬇ Ekspor
+            </button>
+            <button wire:click="create" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">+ Tambah Kategori</button>
+        </div>
     </div>
 
     <div class="table-wrap">
@@ -24,7 +29,7 @@
                     <td class="px-4 py-3 text-center">
                         <button wire:click="toggleActive({{ $cat->id }})" 
                                 class="text-xs px-2 py-1 rounded-full transition-colors duration-150
-                                {{ $cat->is_active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}">
+                                {{ $cat->is_active ? 'bg-primary-100 text-primary-700 hover:bg-primary-200' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
                             {{ $cat->is_active ? 'Aktif' : 'Nonaktif' }}
                         </button>
                     </td>

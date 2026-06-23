@@ -17,11 +17,8 @@
             </select>
         </div>
         <div class="flex gap-2">
-            <button wire:click="exportExcel" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+            <button wire:click="exportExcel" class="px-3 py-2 border border-primary-300 dark:border-primary-600 text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/20 hover:bg-primary-100 dark:hover:bg-primary-900/40 rounded-lg text-sm font-medium">
                 ⬇ Ekspor
-            </button>
-            <button wire:click="$toggle('showImportModal')" class="px-3 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">
-                ⬆ Impor
             </button>
             <button wire:click="create" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">
                 + Tambah Produk
@@ -173,24 +170,6 @@
                 <button wire:click="$set('showDeleteModal', false)" class="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Batal</button>
                 <button wire:click="delete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">Hapus</button>
             </div>
-        </div>
-    </div>
-    @endif
-
-    <!-- Import Modal -->
-    @if($showImportModal)
-    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full">
-            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Import Produk dari Excel</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Format: Nama, SKU, Kategori, Satuan, Harga Beli, Harga Jual, Stok, Min Stok</p>
-            <form wire:submit="importExcel">
-                <input type="file" wire:model="importFile" accept=".xlsx,.xls,.csv" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 mb-4">
-                @error('importFile') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
-                <div class="flex gap-2 justify-end">
-                    <button type="button" wire:click="$set('showImportModal', false)" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 text-sm font-medium">Import</button>
-                </div>
-            </form>
         </div>
     </div>
     @endif

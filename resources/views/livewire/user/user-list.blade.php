@@ -50,7 +50,7 @@
                         <td class="px-4 py-3 text-center">
                             <button wire:click="toggleActive({{ $user->id }})" 
                                     class="badge transition-colors
-                                    {{ $user->is_active ? 'badge-green hover:bg-green-200 dark:hover:bg-green-800/50' : 'badge-red hover:bg-red-200 dark:hover:bg-red-800/50' }}">
+                                    {{ $user->is_active ? 'badge-emerald hover:bg-emerald-200 dark:hover:bg-emerald-800/50' : 'badge-gray hover:bg-gray-200 dark:hover:bg-gray-600' }}">
                                 {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
                             </button>
                         </td>

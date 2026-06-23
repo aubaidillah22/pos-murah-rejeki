@@ -5,6 +5,7 @@ namespace App\Livewire\Customer;
 use App\Models\Customer;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class CustomerList extends Component
 {

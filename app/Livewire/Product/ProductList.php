@@ -39,9 +39,6 @@ class ProductList extends Component
     public $showForm = false;
     public $showDeleteModal = false;
     public $deleteId;
-    public $showImportModal = false;
-    public $importFile;
-
     protected function rules()
     {
         return [
@@ -176,52 +173,7 @@ class ProductList extends Component
             ];
         });
 
-        $filename = 'produk-' . now()->format('Ymd-His') . '.xlsx';
-        return response()->streamDownload(function () use ($exportData) {
-            echo (new FastExcel($exportData))->export('php://output');
-        }, $filename);
-    }
-
-    public function importExcel()
-    {
-        $this->validate(['importFile' => 'required|file|mimes:xlsx,xls,csv']);
-
-        $collection = (new FastExcel)->import($this->importFile->getRealPath());
-        
-        foreach ($collection as $row) {
-            $category = Category::where('name', $row['Kategori'] ?? '')->first();
-            $unit = Unit::where('name', $row['Satuan'] ?? '')->first();
-
-            $importStock = (int) ($row['Stok'] ?? 0);
-            $outletId = auth()->user()->outlet_id;
-
-            $product = Product::updateOrCreate(
-                ['sku' => $row['SKU'] ?? null],
-                [
-                    'name' => $row['Nama'],
-                    'category_id' => $category?->id,
-                    'unit_id' => $unit?->id,
-                    'purchase_price' => $row['Harga Beli'] ?? 0,
-                    'selling_price' => $row['Harga Jual'] ?? 0,
-                    'stock' => 0,
-                    'min_stock_alert' => $row['Min Stok'] ?? 0,
-                    'outlet_id' => $outletId,
-                    'is_active' => true,
-                ]
-            );
-
-            if ($importStock > 0) {
-                app(StockService::class)->setInitial(
-                    product: $product,
-                    stock: $importStock,
-                    description: 'Stok awal dari import Excel',
-                    outletId: $outletId,
-                );
-            }
-        }
-
-        $this->showImportModal = false;
-        session()->flash('success', 'Import produk berhasil!');
+        return (new FastExcel($exportData))->download('produk-' . now()->format('Ymd-His') . '.xlsx');
     }
 
     public function resetForm()

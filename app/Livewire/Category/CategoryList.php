@@ -4,6 +4,7 @@ namespace App\Livewire\Category;
 
 use App\Models\Category;
 use Livewire\Component;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class CategoryList extends Component
 {
@@ -94,6 +95,25 @@ class CategoryList extends Component
         $this->showDeleteModal = false;
         $this->deleteId = null;
         session()->flash('success', 'Kategori berhasil dihapus!');
+    }
+
+    public function exportExcel()
+    {
+        $categories = Category::withCount('products')
+            ->when(auth()->user()->outlet_id, fn($q) => $q->where('outlet_id', auth()->user()->outlet_id))
+            ->orderBy('name')
+            ->get();
+
+        $exportData = $categories->map(function ($c) {
+            return [
+                'Nama' => $c->name,
+                'Deskripsi' => $c->description ?? '',
+                'Jumlah Produk' => $c->products_count,
+                'Status' => $c->is_active ? 'Aktif' : 'Nonaktif',
+            ];
+        });
+
+        return (new FastExcel($exportData))->download('kategori-' . now()->format('Ymd-His') . '.xlsx');
     }
 
     public function render()

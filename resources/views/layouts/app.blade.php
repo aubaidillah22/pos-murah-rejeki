@@ -98,8 +98,8 @@
 
         /* Badge utilities */
         .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
-        .badge-green { @apply badge bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300; }
-        .badge-red { @apply badge bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300; }
+        .badge-green { @apply badge bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300; }
+        .badge-red { @apply badge bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400; }
         .badge-emerald { @apply badge bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300; }
         .badge-blue { @apply badge bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300; }
         .badge-amber { @apply badge bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300; }
@@ -107,8 +107,8 @@
 
         /* Status dot */
         .status-dot { @apply w-2 h-2 rounded-full inline-block; }
-        .status-dot-green { @apply status-dot bg-green-500; }
-        .status-dot-red { @apply status-dot bg-red-500; }
+        .status-dot-green { @apply status-dot bg-emerald-500; }
+        .status-dot-red { @apply status-dot bg-gray-500; }
         .status-dot-amber { @apply status-dot bg-amber-500; }
 
         /* Table cell utilities */

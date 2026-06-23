@@ -11,6 +11,7 @@ use Database\Seeders\RoleSeeder;
 use Database\Seeders\OutletSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Rap2hpoutre\FastExcel\FastExcel;
 use Tests\TestCase;
 use App\Livewire\Product\ProductList;
 
@@ -216,6 +217,22 @@ class ProductListTest extends TestCase
             ->test(ProductList::class)
             ->assertSee('Showing')
             ->assertSee('results');
+    }
+
+    /** @test */
+    public function can_export_excel()
+    {
+        Product::factory()->count(3)->create([
+            'outlet_id' => $this->outlet->id,
+            'category_id' => Category::first()->id,
+            'unit_id' => Unit::first()->id,
+            'is_active' => true,
+        ]);
+
+        Livewire::actingAs($this->admin)
+            ->test(ProductList::class)
+            ->call('exportExcel')
+            ->assertFileDownloaded();
     }
 
     /** @test */

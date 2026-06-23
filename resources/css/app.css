@@ -6,6 +6,43 @@
     body {
         @apply antialiased text-gray-800 dark:text-gray-100 dark:bg-gray-900;
     }
+
+    :root, .theme-green {
+        --color-emerald-50: 236 253 245; --color-emerald-100: 209 250 229; --color-emerald-200: 167 243 208;
+        --color-emerald-300: 110 231 183; --color-emerald-400: 52 211 153; --color-emerald-500: 16 185 129;
+        --color-emerald-600: 5 150 105; --color-emerald-700: 4 120 87; --color-emerald-800: 6 95 70;
+        --color-emerald-900: 6 78 59;
+    }
+    .theme-red {
+        --color-emerald-50: 254 242 242; --color-emerald-100: 254 226 226; --color-emerald-200: 254 202 202;
+        --color-emerald-300: 252 165 165; --color-emerald-400: 248 113 113; --color-emerald-500: 239 68 68;
+        --color-emerald-600: 220 38 38; --color-emerald-700: 185 28 28; --color-emerald-800: 153 27 27;
+        --color-emerald-900: 127 29 29;
+    }
+    .theme-blue {
+        --color-emerald-50: 239 246 255; --color-emerald-100: 219 234 254; --color-emerald-200: 191 219 254;
+        --color-emerald-300: 147 197 253; --color-emerald-400: 96 165 250; --color-emerald-500: 59 130 246;
+        --color-emerald-600: 37 99 235; --color-emerald-700: 29 78 216; --color-emerald-800: 30 64 175;
+        --color-emerald-900: 30 58 138;
+    }
+    .theme-purple {
+        --color-emerald-50: 245 243 255; --color-emerald-100: 237 233 254; --color-emerald-200: 221 214 254;
+        --color-emerald-300: 196 181 253; --color-emerald-400: 167 139 250; --color-emerald-500: 139 92 246;
+        --color-emerald-600: 124 58 237; --color-emerald-700: 109 40 217; --color-emerald-800: 91 33 182;
+        --color-emerald-900: 76 29 149;
+    }
+    .theme-orange {
+        --color-emerald-50: 255 247 237; --color-emerald-100: 255 237 213; --color-emerald-200: 254 215 170;
+        --color-emerald-300: 253 186 116; --color-emerald-400: 251 146 60; --color-emerald-500: 249 115 22;
+        --color-emerald-600: 234 88 12; --color-emerald-700: 194 65 12; --color-emerald-800: 154 52 18;
+        --color-emerald-900: 124 45 18;
+    }
+    .theme-pink {
+        --color-emerald-50: 255 241 242; --color-emerald-100: 255 228 230; --color-emerald-200: 254 205 211;
+        --color-emerald-300: 253 164 175; --color-emerald-400: 251 113 133; --color-emerald-500: 244 63 94;
+        --color-emerald-600: 225 29 72; --color-emerald-700: 190 18 60; --color-emerald-800: 159 18 57;
+        --color-emerald-900: 136 19 55;
+    }
 }
 
 @layer components {
