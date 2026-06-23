@@ -5,14 +5,18 @@ namespace App\Livewire\User;
 use App\Models\User;
 use App\Models\Outlet;
 use Livewire\Component;
+use Livewire\WithPagination;
 use Spatie\Permission\Models\Role;
 
 class UserList extends Component
 {
+    use WithPagination;
+
     public $showForm = false;
     public $showDeleteModal = false;
     public $editId = null;
     public $deleteId = null;
+    public $search = '';
 
     // Form fields
     public $name;
@@ -125,6 +129,23 @@ class UserList extends Component
         session()->flash('success', 'Pengguna berhasil dihapus!');
     }
 
+    public function closeForm()
+    {
+        $this->resetForm();
+        $this->showForm = false;
+    }
+
+    public function closeDeleteModal()
+    {
+        $this->showDeleteModal = false;
+        $this->deleteId = null;
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function resetForm()
     {
         $this->reset(['editId', 'name', 'email', 'password', 'selected_outlet_id', 'selected_role']);
@@ -133,7 +154,13 @@ class UserList extends Component
 
     public function render()
     {
-        $users = User::with(['outlet', 'roles'])->orderBy('name')->get();
+        $users = User::with(['outlet', 'roles'])
+            ->where(function ($q) {
+                $q->where('name', 'like', "%{$this->search}%")
+                  ->orWhere('email', 'like', "%{$this->search}%");
+            })
+            ->orderBy('name')->paginate(15);
+
         $outlets = Outlet::where('is_active', true)->get();
         $roles = Role::all();
 

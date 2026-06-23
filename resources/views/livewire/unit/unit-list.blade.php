@@ -33,8 +33,8 @@
     </div>
 
     @if($showForm)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full">
             <h3 class="text-lg font-semibold mb-4">{{ $editId ? 'Edit Satuan' : 'Tambah Satuan' }}</h3>
             <form wire:submit="save" class="space-y-4">
                 <div>
@@ -51,8 +51,8 @@
     @endif
 
     @if($showDeleteModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Hapus Satuan?</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Tindakan ini tidak dapat dibatalkan.</p>
             <div class="flex gap-2 justify-end">

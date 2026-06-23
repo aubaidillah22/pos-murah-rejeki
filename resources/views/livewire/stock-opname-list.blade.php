@@ -71,8 +71,8 @@
 
     <!-- Create Form Modal -->
     @if($showForm)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-lg w-full mx-4">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-lg w-full">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Stok Opname Baru</h3>
                 <button wire:click="$set('showForm', false)" class="text-gray-400 hover:text-gray-600">&times;</button>
@@ -176,8 +176,8 @@
 
     <!-- Detail Modal -->
     @if($showDetail)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Detail Stok Opname</h3>
                 <button wire:click="$set('showDetail', null)" class="text-gray-400 hover:text-gray-600">&times;</button>

@@ -82,8 +82,8 @@
 
     <!-- Form Modal -->
     @if($showForm)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 overflow-y-auto">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-lg w-full mx-4 my-8">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-lg font-semibold">{{ $product_id ? 'Edit Produk' : 'Tambah Produk' }}</h3>
                 <button wire:click="$set('showForm', false)" class="text-gray-400 hover:text-gray-600">&times;</button>
@@ -165,8 +165,8 @@
 
     <!-- Delete Modal -->
     @if($showDeleteModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Hapus Produk?</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Tindakan ini tidak dapat dibatalkan.</p>
             <div class="flex gap-2 justify-end">
@@ -179,8 +179,8 @@
 
     <!-- Import Modal -->
     @if($showImportModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Import Produk dari Excel</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Format: Nama, SKU, Kategori, Satuan, Harga Beli, Harga Jual, Stok, Min Stok</p>
             <form wire:submit="importExcel">

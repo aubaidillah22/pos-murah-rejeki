@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Models\Outlet;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\Customer;
@@ -24,22 +25,40 @@ class Index extends Component
     public $topCashierToday = [];
 
     public $selectedYear;
+    public $outletFilter;
+    public $outlets = [];
 
     public function mount()
     {
         $this->selectedYear = now()->year;
+        $user = auth()->user();
+
+        if ($user->hasRole('Admin')) {
+            $this->outlets = Outlet::where('is_active', true)->orderBy('name')->get();
+            $this->outletFilter = $user->outlet_id ?? '';
+        } else {
+            $this->outletFilter = $user->outlet_id;
+        }
+
         $this->loadData();
     }
 
     public function updatedSelectedYear()
     {
         $this->loadData();
-        $this->dispatch('yearChanged', year: $this->selectedYear, monthlySales: $this->monthlySales);
+        $this->dispatch('chartChanged', monthlySales: $this->monthlySales, paymentMethodData: $this->paymentMethodData);
+    }
+
+    public function updatedOutletFilter()
+    {
+        $this->loadData();
+        $this->dispatch('chartChanged', monthlySales: $this->monthlySales, paymentMethodData: $this->paymentMethodData);
     }
 
     public function loadData()
     {
-        $outletId = auth()->user()->outlet_id;
+        $user = auth()->user();
+        $outletId = $user->hasRole('Admin') ? ($this->outletFilter ?: null) : $user->outlet_id;
         $today = now()->format('Y-m-d');
 
         // Total penjualan hari ini (exclude voided)

@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Transaction;
 
+use App\Models\Customer;
+use App\Models\Outlet;
 use App\Models\Transaction;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -15,10 +17,15 @@ class TransactionList extends Component
     public $dateTo = '';
     public $paymentMethod = '';
     public $paymentStatus = '';
+    public $filter_outlet_id = '';
     public $showDetail = null;
     public $showVoidModal = false;
     public $voidId = null;
     public $voidReason = '';
+    public $showEditModal = false;
+    public $editId = null;
+    public $editNotes = '';
+    public $editCustomerId = null;
 
     public function updatingSearch()
     {
@@ -45,9 +52,14 @@ class TransactionList extends Component
         $this->resetPage();
     }
 
+    public function updatingFilterOutletId()
+    {
+        $this->resetPage();
+    }
+
     public function viewDetail($id)
     {
-        $this->showDetail = Transaction::with(['details.product', 'customer', 'user', 'voidedBy'])
+        $this->showDetail = Transaction::with(['details.product', 'customer', 'user', 'voidedBy', 'outlet'])
             ->findOrFail($id);
     }
 
@@ -66,6 +78,41 @@ class TransactionList extends Component
     public function closeDetail()
     {
         $this->showDetail = null;
+    }
+
+    public function editTransaction($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $this->editId = $transaction->id;
+        $this->editNotes = $transaction->notes;
+        $this->editCustomerId = $transaction->customer_id;
+        $this->showEditModal = true;
+    }
+
+    public function updateTransaction()
+    {
+        $this->validate([
+            'editNotes' => 'nullable|string|max:500',
+            'editCustomerId' => 'nullable|exists:customers,id',
+        ]);
+
+        $transaction = Transaction::findOrFail($this->editId);
+        $transaction->update([
+            'notes' => $this->editNotes,
+            'customer_id' => $this->editCustomerId ?: null,
+        ]);
+
+        activity()->performedOn($transaction)->log('Transaksi diupdate: ' . $transaction->invoice_number);
+        session()->flash('success', 'Transaksi berhasil diupdate!');
+        $this->closeEditModal();
+    }
+
+    public function closeEditModal()
+    {
+        $this->showEditModal = false;
+        $this->editId = null;
+        $this->editNotes = '';
+        $this->editCustomerId = null;
     }
 
     public function closeVoidModal()
@@ -95,6 +142,8 @@ class TransactionList extends Component
 
     public function render()
     {
+        $outlets = auth()->user()->hasRole('Admin') ? Outlet::where('is_active', true)->get() : collect();
+
         $query = Transaction::with(['customer', 'user'])
             ->notVoided()
             ->when($this->search, function ($q) {
@@ -110,10 +159,13 @@ class TransactionList extends Component
             ->when($this->paymentMethod, fn($q) => $q->where('payment_method', $this->paymentMethod))
             ->when($this->paymentStatus, fn($q) => $q->where('payment_status', $this->paymentStatus))
             ->when(auth()->user()->outlet_id, fn($q) => $q->where('outlet_id', auth()->user()->outlet_id))
+            ->when(auth()->user()->hasRole('Admin') && $this->filter_outlet_id, fn($q) => $q->where('outlet_id', $this->filter_outlet_id))
             ->orderBy('id', 'desc');
 
         return view('livewire.transaction.transaction-list', [
-            'transactions' => $query->paginate(20),
+            'transactions' => $query->paginate(15),
+            'outlets' => $outlets,
+            'customers' => Customer::orderBy('name')->get(),
         ])->layout('layouts.app', ['title' => 'Transaksi']);
     }
 }

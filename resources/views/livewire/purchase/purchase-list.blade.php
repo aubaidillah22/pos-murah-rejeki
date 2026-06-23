@@ -44,8 +44,8 @@
     </div>
 
     @if($showForm)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 overflow-y-auto">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-2xl w-full mx-4 my-8">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <h3 class="text-lg font-semibold mb-4">Buat Purchase Order</h3>
             
             <div class="mb-4">
@@ -99,8 +99,8 @@
     @endif
 
     @if($showReceiveModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full mx-4">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-sm w-full">
             <h3 class="text-lg font-semibold mb-2">Konfirmasi Penerimaan</h3>
             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Stok barang akan ditambahkan secara otomatis. Lanjutkan?</p>
             <div class="flex gap-2 justify-end">

@@ -4,13 +4,17 @@ namespace App\Livewire\Outlet;
 
 use App\Models\Outlet;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class OutletList extends Component
 {
+    use WithPagination;
+
     public $showForm = false;
     public $showDeleteModal = false;
     public $editId = null;
     public $deleteId = null;
+    public $search = '';
 
     // Form fields
     public $name;
@@ -78,8 +82,9 @@ class OutletList extends Component
     public function toggleActive($id)
     {
         $outlet = Outlet::findOrFail($id);
-        $outlet->update(['is_active' => !$outlet->is_active]);
-        $status = $outlet->is_active ? 'diaktifkan' : 'dinonaktifkan';
+        $newStatus = !$outlet->is_active;
+        $outlet->update(['is_active' => $newStatus]);
+        $status = $newStatus ? 'diaktifkan' : 'dinonaktifkan';
         activity()->performedOn($outlet)->log("Outlet {$status}: {$outlet->name}");
         session()->flash('success', "Outlet berhasil {$status}!");
     }
@@ -98,16 +103,32 @@ class OutletList extends Component
         if ($outlet->users_count > 0 || $outlet->products_count > 0 ||
             $outlet->transactions_count > 0 || $outlet->purchase_orders_count > 0 ||
             $outlet->expenses_count > 0) {
-            $this->showDeleteModal = false;
+            $this->closeDeleteModal();
             session()->flash('error', 'Outlet tidak dapat dihapus karena masih memiliki data terkait (pengguna, produk, transaksi, dll). Nonaktifkan saja outlet ini.');
             return;
         }
 
         activity()->performedOn($outlet)->log('Outlet dihapus: ' . $outlet->name);
         $outlet->delete();
+        $this->closeDeleteModal();
+        session()->flash('success', 'Outlet berhasil dihapus!');
+    }
+
+    public function closeForm()
+    {
+        $this->resetForm();
+        $this->showForm = false;
+    }
+
+    public function closeDeleteModal()
+    {
         $this->showDeleteModal = false;
         $this->deleteId = null;
-        session()->flash('success', 'Outlet berhasil dihapus!');
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
     }
 
     public function resetForm()
@@ -118,7 +139,12 @@ class OutletList extends Component
 
     public function render()
     {
-        $outlets = Outlet::orderBy('name')->get();
+        $outlets = Outlet::where(function ($q) {
+            $q->where('name', 'like', "%{$this->search}%")
+              ->orWhere('address', 'like', "%{$this->search}%")
+              ->orWhere('phone', 'like', "%{$this->search}%")
+              ->orWhere('email', 'like', "%{$this->search}%");
+        })->orderBy('name')->paginate(15);
 
         return view('livewire.outlet.outlet-list', compact('outlets'))
             ->layout('layouts.app', ['title' => 'Outlet']);

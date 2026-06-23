@@ -65,8 +65,8 @@
                 $showChange = \App\Models\Setting::getValue('receipt_show_change', '1') === '1';
                 $showSku = \App\Models\Setting::getValue('receipt_show_sku', '0') === '1';
             @endphp
-            <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+            <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full">
                     <div id="receipt" style="width: {{ $receiptWidth }}; margin: 0 auto;">
                         <div class="text-center mb-3 border-b border-gray-200 dark:border-gray-700 pb-3">
                             <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100">{{ $storeName }}</h3>
@@ -237,8 +237,8 @@
 
     <!-- Customer Modal -->
     @if($showCustomerModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 relative">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full relative">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Pilih Pelanggan</h3>
             
             <input type="text" wire:model.live="customer_search" 
@@ -270,8 +270,8 @@
 
     <!-- Payment Modal -->
     @if($showPaymentModal)
-    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+    <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 max-w-md w-full">
             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Pembayaran</h3>
             
             <div class="space-y-3 mb-4">

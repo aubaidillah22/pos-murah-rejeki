@@ -69,8 +69,8 @@
         .dark * { scrollbar-color: #374151 transparent; }
 
         /* Page transition */
-        .page-enter { opacity: 0; transform: translateY(8px); }
-        .page-enter-active { opacity: 1; transform: translateY(0); transition: opacity .25s ease-out, transform .25s ease-out; }
+        .page-enter { opacity: 0; }
+        .page-enter-active { opacity: 1; transition: opacity .25s ease-out; }
 
         /* Dashboard card stagger animation */
         @keyframes fade-in-up {

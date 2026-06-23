@@ -79,12 +79,23 @@
         <div class="lg:col-span-2 card p-5 animate-fade-in" style="animation-delay: 0.5s">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="text-base font-semibold text-gray-800 dark:text-gray-100"><span class="text-emerald-600">Grafik</span> Penjualan Bulanan</h3>
-                <select wire:model.live="selectedYear" 
-                        class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm dark:bg-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500">
-                    @for($y = now()->year; $y >= now()->year - 3; $y--)
-                    <option value="{{ $y }}">{{ $y }}</option>
-                    @endfor
-                </select>
+                <div class="flex items-center gap-2">
+                    @if(count($outlets) > 0)
+                    <select wire:model.live="outletFilter" 
+                            class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm dark:bg-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500">
+                        <option value="">Semua Outlet</option>
+                        @foreach($outlets as $outlet)
+                        <option value="{{ $outlet->id }}">{{ $outlet->name }}</option>
+                        @endforeach
+                    </select>
+                    @endif
+                    <select wire:model.live="selectedYear" 
+                            class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1.5 text-sm dark:bg-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-emerald-500">
+                        @for($y = now()->year; $y >= now()->year - 3; $y--)
+                        <option value="{{ $y }}">{{ $y }}</option>
+                        @endfor
+                    </select>
+                </div>
             </div>
             <div id="salesChart" style="min-height: 300px;"></div>
         </div>
@@ -393,12 +404,25 @@
         }
     });
 
-    // Listen for year changes from Livewire
-    document.addEventListener('yearChanged', function(event) {
+    // Listen for filter changes from Livewire (year or outlet)
+    document.addEventListener('chartChanged', function(event) {
         if (salesChart) {
             salesChart.updateOptions({
                 series: [{ data: event.detail.monthlySales }]
             });
+        }
+        if (paymentChart && event.detail.paymentMethodData) {
+            var data = event.detail.paymentMethodData;
+            if (data.length > 0) {
+                paymentChart.updateOptions({
+                    series: data.map(function(d) { return d.value; }),
+                    labels: data.map(function(d) { return d.label; }),
+                    colors: data.map(function(d) { return d.color; })
+                });
+            }
+        } else if (event.detail.paymentMethodData && event.detail.paymentMethodData.length === 0 && paymentChart) {
+            paymentChart.destroy();
+            paymentChart = null;
         }
     });
 </script>
