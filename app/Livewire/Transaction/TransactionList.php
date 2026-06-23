@@ -20,6 +20,31 @@ class TransactionList extends Component
     public $voidId = null;
     public $voidReason = '';
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDateFrom()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDateTo()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPaymentMethod()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingPaymentStatus()
+    {
+        $this->resetPage();
+    }
+
     public function viewDetail($id)
     {
         $this->showDetail = Transaction::with(['details.product', 'customer', 'user', 'voidedBy'])
@@ -36,6 +61,18 @@ class TransactionList extends Component
         $this->voidId = $id;
         $this->voidReason = '';
         $this->showVoidModal = true;
+    }
+
+    public function closeDetail()
+    {
+        $this->showDetail = null;
+    }
+
+    public function closeVoidModal()
+    {
+        $this->showVoidModal = false;
+        $this->voidId = null;
+        $this->voidReason = '';
     }
 
     public function voidTransaction()
@@ -61,7 +98,10 @@ class TransactionList extends Component
         $query = Transaction::with(['customer', 'user'])
             ->notVoided()
             ->when($this->search, function ($q) {
-                $q->where('invoice_number', 'like', '%' . $this->search . '%');
+                $q->where('invoice_number', 'like', '%' . $this->search . '%')
+                  ->orWhere('notes', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('customer', fn($cq) => $cq->where('name', 'like', '%' . $this->search . '%'))
+                  ->orWhereHas('user', fn($uq) => $uq->where('name', 'like', '%' . $this->search . '%'));
             })
             ->when($this->dateFrom, fn($q) => $q->whereDate('transaction_date', '>=', $this->dateFrom))
             ->when($this->dateTo, fn($q) => $q->whereDate('transaction_date', '<=', $this->dateTo))
@@ -71,7 +111,7 @@ class TransactionList extends Component
             ->orderBy('id', 'desc');
 
         return view('livewire.transaction.transaction-list', [
-            'transactions' => $query->paginate(15),
+            'transactions' => $query->paginate(20),
         ])->layout('layouts.app', ['title' => 'Transaksi']);
     }
 }

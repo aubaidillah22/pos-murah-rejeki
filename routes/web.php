@@ -70,6 +70,14 @@ Route::middleware(['auth'])->group(function () {
     // Transactions
     Route::get('/transactions', TransactionList::class)->name('transactions')
         ->middleware('permission:view-transactions');
+    Route::get('/transactions/{id}/print', function ($id) {
+        $transaction = \App\Models\Transaction::with(['details.product', 'customer', 'user'])
+            ->findOrFail($id);
+
+        activity()->log('Cetak ulang struk: ' . $transaction->invoice_number);
+
+        return view('exports.receipt-print', compact('transaction'));
+    })->name('transactions.print')->middleware('permission:view-transactions');
 
     // Reports
     Route::get('/reports', ReportIndex::class)->name('reports')
